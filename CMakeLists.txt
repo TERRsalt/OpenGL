@@ -9,7 +9,9 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_executable(${PROJECT_NAME} source/main.cpp)
+add_executable(${PROJECT_NAME} source/main.cpp
+    source/fun.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL

@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "fun.hpp"
+
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
@@ -42,14 +44,22 @@ int main() {
 
     //info // Running the window //
 
+    //minor // Stuff to do before running the window //
+
+    std::map<std::string, float> backgroundColor = {{"red", 1}, {"green", 1}, {"blue", 1}};
+
+    //minor // Actually running the window //
+
     while (!glfwWindowShouldClose(window)) {
         //minor // Input //
 
         processInput(window);
 
+        randomBackgroundColor(window, backgroundColor);
+
         //minor // Rendering //
 
-        glClearColor(1, 1, 1, 1);
+        glClearColor(backgroundColor["red"], backgroundColor["green"], backgroundColor["blue"], 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
         //minor // Check and call events and swap the buffers //
