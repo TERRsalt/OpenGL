@@ -10,6 +10,7 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
 add_executable(${PROJECT_NAME} source/main.cpp
+    source/files.cpp
     source/fun.cpp
 )
 
@@ -18,3 +19,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     GLEW::GLEW
 )
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/source/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/source")
