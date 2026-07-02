@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "files.hpp"
-#include "fun.hpp"
+#include "random.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -33,7 +33,7 @@ int main() {
 
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
-        std::println("Failed to initalize GLEW");
+        std::println("Failed to initialize GLEW");
         return -1;
     }
 
@@ -66,11 +66,11 @@ int main() {
 
     //minor // Errors //
 
-    int succes;
+    int success;
     char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &succes);
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
 
-    if (!succes) {
+    if (!success) {
         glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
         std::println("Error! Vertex shader compilation error\n{}", infoLog);
     }
@@ -89,9 +89,9 @@ int main() {
 
     //minor // Errors //
 
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &succes);
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 
-    if (!succes) {
+    if (!success) {
         glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
         std::println("Error! Fragment shader compilation error\n{}", infoLog);
     }
@@ -106,9 +106,9 @@ int main() {
 
     //minor // Errors //
 
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &succes);
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 
-    if (!succes) {
+    if (!success) {
         glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
         std::println("Error! Shader program compilation error!");
     }

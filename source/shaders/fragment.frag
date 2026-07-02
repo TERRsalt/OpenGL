@@ -1,7 +1,7 @@
 #version 330 core
 
-out vec4 fragmentColor;
+out vec4 FragmentColor;
 
 void main() {
-    fragmentColor = vec4(0, 0, 0, 1);
+    FragmentColor = vec4(0, 0, 0, 1);
 }
