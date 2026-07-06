@@ -4,14 +4,12 @@
 #include <GLFW/glfw3.h>
 
 #include "files.hpp"
-#include "random.hpp"
+#include "keyboard.hpp"
+
+#include "shaders/renderer.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
-
-void framebufferSizeCallback(GLFWwindow *window, int screenWidth, int screenHeight) {glViewport(0, 0, screenWidth, screenHeight);}
-
-void processInput(GLFWwindow *window) {if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) glfwSetWindowShouldClose(window, true);}
 
 int main() {
     glfwInit();
@@ -43,13 +41,21 @@ int main() {
 
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    //info // Vertex data //
+    //info // Vertices and indices //
 
     float vertices[] = {
+        -0.5, 0.5, 0,
         -0.5, -0.5, 0,
         0.5, -0.5, 0,
-        0, 0.5, 0
+        0.5, 0.5, 0
     };
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        0, 2, 3
+    };
+
+    //info // Vertex data //
 
     unsigned int vertexBufferObjects;
     glGenBuffers(1, &vertexBufferObjects);
@@ -139,20 +145,20 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
+    //info // Element Buffer Objects //
+
+    unsigned int elementBufferObjects;
+    glGenBuffers(1, &elementBufferObjects);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObjects);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     //info // Running the window //
-
-    //minor // Stuff to do before running the window //
-
-    std::map<std::string, float> backgroundColor = {{"red", 1}, {"green", 1}, {"blue", 1}};
-
-    //minor // Actually running the window //
 
     while (!glfwWindowShouldClose(window)) {
         //minor // Input //
 
         processInput(window);
-
-        randomBackgroundColor(window, backgroundColor);
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -164,7 +170,8 @@ int main() {
         glUseProgram(shaderProgram);
         glBindVertexArray(vertexArrayObject);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
+        //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing triangle //
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing quad //
 
         //minor // Check and call events and swap the buffers //
 
@@ -175,7 +182,10 @@ int main() {
     //info // Cleanup //
 
     glDeleteVertexArrays(1, &vertexArrayObject);
+
     glDeleteBuffers(1, &vertexBufferObjects);
+    glDeleteBuffers(1, &elementBufferObjects);
+
     glDeleteProgram(shaderProgram);
 
     //info // Closing the window //

@@ -8,19 +8,14 @@
 int randomInt(int maxNumber) {return rand()%(maxNumber+1);}
 float randomFloat(int maxNumber) {return (float)randomInt(maxNumber*100)/100;}
 
-std::map<std::string, float> randomBackgroundColor(GLFWwindow *window, std::map<std::string, float> &backgroundColor) {
-    bool isPressed = glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS;
-    static bool wasPressed = false;
+std::map<std::string, float> randomRgbColor() {
+    std::map<std::string, float> randomColor = {
+        {"red", randomFloat(1)},
+        {"green", randomFloat(1)},
+        {"blue", randomFloat(1)}
+    };
 
-    if (isPressed && !wasPressed) {
-        backgroundColor["red"] = randomFloat(1);
-        backgroundColor["green"] = randomFloat(1);
-        backgroundColor["blue"] = randomFloat(1);
+    std::println("Changed the color to RGB({}, {}, {})", randomColor["red"], randomColor["green"], randomColor["blue"]);
 
-        std::println("Changed the color to RGB({}, {}, {})", backgroundColor["red"], backgroundColor["green"], backgroundColor["blue"]);
-    }
-
-    wasPressed = isPressed;
-
-    return backgroundColor;
+    return randomColor;
 }

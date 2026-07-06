@@ -12,7 +12,13 @@ find_package(GLEW REQUIRED)
 add_executable(${PROJECT_NAME} source/main.cpp
     source/files.cpp
 
+    source/keyboard.cpp
+
     source/random.cpp
+
+    #minor # shaders/ #
+
+    source/shaders/renderer.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
