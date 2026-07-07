@@ -27,4 +27,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     GLEW::GLEW
 )
 
-file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/source/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/source")
+#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/source/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/source") #exp # Only for final compilation #
