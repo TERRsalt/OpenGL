@@ -1,4 +1,5 @@
 #include <print>
+#include <cmath>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -10,8 +11,6 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
-
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {glViewport(0, 0, width, height);}
 
 int renderer() {
     glfwInit();
@@ -98,10 +97,17 @@ int renderer() {
     //info // Vertices and indices //
 
     float vertices[] = {
-        -0.5, 0.5, 0,
+        -0.5, 0.5, 0, //minor // Positions //
+        0, 1, 0, //minor // Colors //
+
         -0.5, -0.5, 0,
+        1, 0, 0,
+
         0.5, -0.5, 0,
-        0.5, 0.5, 0
+        0, 1, 0,
+
+        0.5, 0.5, 0,
+        0, 0, 1
     };
 
     unsigned int indices[] = {
@@ -111,24 +117,29 @@ int renderer() {
 
     //info // Vertex and buffer(s) data //
 
-    unsigned int vertexBufferObject, vertexArrayObject, elementBufferObject;
+    unsigned int vbo, vao, ebo;
 
-    glGenBuffers(1, &vertexBufferObject);
-    glGenVertexArrays(1, &vertexArrayObject);
-    glGenBuffers(1, &elementBufferObject);
+    glGenBuffers(1, &vbo);
+    glGenVertexArrays(1, &vao);
+    glGenBuffers(1, &ebo);
 
     //minor // Binding the Vertex Array Object and Element BufferObject //
 
-    glBindVertexArray(vertexArrayObject);
+    glBindVertexArray(vao);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferObject);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferObject);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), nullptr);
+    //exp // Position attributes //
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
+
+    //exp // Color attributes //
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); //exp // Unbinding the VBO and VAO //
     glBindVertexArray(0);
@@ -146,8 +157,8 @@ int renderer() {
         //minor // Drawing the object(s) //
 
         glUseProgram(shaderProgram);
-        glBindVertexArray(vertexArrayObject);
 
+        glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing the quad //
 
@@ -159,10 +170,10 @@ int renderer() {
 
     //info // Cleanup //
 
-    glDeleteVertexArrays(1, &vertexArrayObject);
+    glDeleteVertexArrays(1, &vao);
 
-    glDeleteBuffers(1, &vertexBufferObject);
-    glDeleteBuffers(1, &elementBufferObject);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
 
     glDeleteProgram(shaderProgram);
 
@@ -172,3 +183,5 @@ int renderer() {
 
     return 0;
 }
+
+void framebufferSizeCallback(GLFWwindow* window, int width, int height) {glViewport(0, 0, width, height);}

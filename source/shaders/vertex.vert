@@ -1,5 +1,11 @@
 #version 330 core
 
-layout (location = 0) in vec3 AttributePosition;
+layout (location = 0) in vec3 aPosition;
+layout (location = 1) in vec3 aColor;
 
-void main() {gl_Position = vec4(AttributePosition, 1);}
+out vec3 CustomColor;
+
+void main() {
+    gl_Position = vec4(aPosition, 1);
+    CustomColor = aColor;
+}
