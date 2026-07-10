@@ -8,6 +8,7 @@
 #include "../keyboard.hpp"
 
 #include "renderer.hpp"
+#include "shader.hpp"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
@@ -40,75 +41,34 @@ int renderer() {
 
     //info // Shaders //
 
-    int success;
-    char infoLog[512];
-
-    //minor // Vertex shader //
-
-    const std::string vertexShaderSource = fileRead("source/shaders/vertex.vert");
-    const char *vertexShaderSourceCChar = vertexShaderSource.c_str();
-
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    glShaderSource(vertexShader, 1, &vertexShaderSourceCChar, nullptr);
-    glCompileShader(vertexShader);
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-        std::println("Error! Vertex shader compilation error\n{}", infoLog);
-    }
-
-    //minor // Fragment shader //
-
-    const std::string fragmentShaderSource = fileRead("source/shaders/fragment.frag");
-    const char *fragmentShaderSourceCChar = fragmentShaderSource.c_str();
-
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(fragmentShader, 1, &fragmentShaderSourceCChar, nullptr);
-    glCompileShader(fragmentShader);
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-        std::println("Error! Fragment shader compilation error\n{}", infoLog);
-    }
-
-    //minor // Shader program //
-
-    unsigned int shaderProgram = glCreateProgram();
-
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::println("Error! Shader program compilation error!");
-    }
-
-    //minor // Deleting shaders //
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader("source/shaders/vertex.vert", "source/shaders/fragment.frag");
 
     //info // Vertices and indices //
 
-    float vertices[] = {
-        -0.5, 0.5, 0, //minor // Positions //
-        0, 1, 0, //minor // Colors //
-
-        -0.5, -0.5, 0,
+    float vertices[] = { //minor // Vertices for triangle //
+        0, 0.5, 0,
         1, 0, 0,
 
-        0.5, -0.5, 0,
+        -0.5, -0.5, 0,
         0, 1, 0,
 
-        0.5, 0.5, 0,
+        0.5, -0.5, 0,
         0, 0, 1
     };
+
+    // float vertices[] = { //minor // Vertices for quad //
+    //     -0.5, 0.5, 0,
+    //     1, 0, 0,
+    //
+    //     -0.5, -0.5, 0,
+    //     0, 1, 0,
+    //
+    //     0.5, -0.5, 0,
+    //     1, 0, 0,
+    //
+    //     0.5, 0.5, 0,
+    //     0, 0, 1
+    // };
 
     unsigned int indices[] = {
         0, 1, 2,
@@ -134,11 +94,11 @@ int renderer() {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     //exp // Position attributes //
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
     //exp // Color attributes //
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6*sizeof(float), reinterpret_cast<void*>(3*sizeof(float)));
     glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); //exp // Unbinding the VBO and VAO //
@@ -156,11 +116,11 @@ int renderer() {
 
         //minor // Drawing the object(s) //
 
-        glUseProgram(shaderProgram);
+        shader.use();
 
         glBindVertexArray(vao);
-        //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing the quad //
+        glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing the quad //
 
         //minor // Check for events, call events and swap the buffers //
 
@@ -175,7 +135,7 @@ int renderer() {
     glDeleteBuffers(1, &vbo);
     glDeleteBuffers(1, &ebo);
 
-    glDeleteProgram(shaderProgram);
+    //todo // Check later how to delete this shader //
 
     //info // Closing the window //
 
