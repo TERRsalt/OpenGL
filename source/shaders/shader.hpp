@@ -67,8 +67,9 @@ public:
     }
 
     void use() const {glUseProgram(shaderProgramId);}
+    void remove() const {glDeleteProgram(shaderProgramId);}
 
-    void setBool(const std::string &name, bool value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), static_cast<int>(value));}
-    void setInt(const std::string &name, int value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
-    void setFloat(const std::string &name, float value) const {glUniform1f(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
+    void setUniform(const std::string &name, bool value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), static_cast<int>(value));}
+    void setUniform(const std::string &name, int value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
+    void setUniform(const std::string &name, float value) const {glUniform1f(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
 };
