@@ -17,7 +17,7 @@ public:
         //minor // Vertex shader //
 
         const std::string vertexShaderSource = fileRead(vertexPath);
-        const char *vertexShaderSourceCChar = vertexShaderSource.c_str();
+        const char* vertexShaderSourceCChar = vertexShaderSource.c_str();
 
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -33,7 +33,7 @@ public:
         //minor // Fragment shader //
 
         const std::string fragmentShaderSource = fileRead(fragmentPath);
-        const char *fragmentShaderSourceCChar = fragmentShaderSource.c_str();
+        const char* fragmentShaderSourceCChar = fragmentShaderSource.c_str();
 
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 

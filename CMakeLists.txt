@@ -27,6 +27,7 @@ add_executable(${PROJECT_NAME} source/_MAIN_.cpp
     #minor # shaders/ #
 
     source/shaders/renderer.cpp
+    source/shaders/texture.cpp
 
     #minor # _vendor_/ #
 
