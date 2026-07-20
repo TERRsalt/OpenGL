@@ -9,13 +9,25 @@ find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
+#info # Fetch content #
+
 include(FetchContent)
+
 FetchContent_Declare(
     stb
     GIT_REPOSITORY https://github.com/nothings/stb.git
     GIT_TAG master
 )
 FetchContent_MakeAvailable(stb)
+
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(glm)
+
+#info # Executable #
 
 add_executable(${PROJECT_NAME} source/_MAIN_.cpp
     source/files.cpp
@@ -40,6 +52,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL
     glfw
     GLEW::GLEW
+    glm::glm
 )
 
 #exp # Only for final compilation #

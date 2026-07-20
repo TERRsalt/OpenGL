@@ -3,7 +3,12 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include "stb_image.h"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../files.hpp"
 #include "../keyboard.hpp"
@@ -132,6 +137,13 @@ int renderer() {
     unsigned int texture2 = texture("assets/dirt.png", GL_NEAREST);
     shader.setUniform("uTexture2", 1);
 
+    //info // Transformation //
+
+    const glm::mat4 unitMatrix = glm::mat4(1);
+
+    glm::vec4 vector(0, 0, 0, 1);
+    glm::mat4 transformationMatrix;
+
     //info // Running the window //
 
     while (!glfwWindowShouldClose(window)) {
@@ -148,6 +160,18 @@ int renderer() {
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
+
+        //minor // Transforming the matrix and sending it to vertex.vert ^-^ //
+
+        transformationMatrix = glm::rotate(unitMatrix, static_cast<float>(glfwGetTime()), glm::vec3(0.5, 1, 0.25));
+        transformationMatrix = glm::scale(transformationMatrix, glm::vec3(0.75, 0.75, 1));
+
+        vector = transformationMatrix*vector;
+
+        int transformationLocation = glGetUniformLocation(shader.shaderProgramId, "transformationMatrix");
+        glUniformMatrix4fv(transformationLocation, 1, GL_FALSE, glm::value_ptr(transformationMatrix)); //todo // Update the shader.hpp //
+
+        //minor // Using the shader //
 
         shader.use();
 
