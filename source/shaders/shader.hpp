@@ -69,7 +69,29 @@ public:
     void use() const {glUseProgram(shaderProgramId);}
     void remove() const {glDeleteProgram(shaderProgramId);}
 
+    //minor // `setUniform` methods //
+
     void setUniform(const std::string &name, bool value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), static_cast<int>(value));}
     void setUniform(const std::string &name, int value) const {glUniform1i(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
     void setUniform(const std::string &name, float value) const {glUniform1f(glGetUniformLocation(shaderProgramId, name.c_str()), value);}
+
+    void setUniform(const std::string &name, const glm::vec2 &vector) const {
+        glUniform2fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, glm::value_ptr(vector));
+    }
+    void setUniform(const std::string &name, const glm::vec3 &vector) const {
+        glUniform3fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, glm::value_ptr(vector));
+    }
+    void setUniform(const std::string &name, const glm::vec4 &vector) const {
+        glUniform4fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, glm::value_ptr(vector));
+    }
+
+    void setUniform(const std::string &name, const glm::mat2 &matrix) const {
+        glUniformMatrix2fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void setUniform(const std::string &name, const glm::mat3 &matrix) const {
+        glUniformMatrix3fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
+    void setUniform(const std::string &name, const glm::mat4 &matrix) const {
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgramId, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+    }
 };

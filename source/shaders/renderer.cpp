@@ -137,13 +137,6 @@ int renderer() {
     unsigned int texture2 = texture("assets/dirt.png", GL_NEAREST);
     shader.setUniform("uTexture2", 1);
 
-    //info // Transformation //
-
-    const glm::mat4 unitMatrix = glm::mat4(1);
-
-    glm::vec4 vector(0, 0, 0, 1);
-    glm::mat4 transformationMatrix;
-
     //info // Running the window //
 
     while (!glfwWindowShouldClose(window)) {
@@ -163,17 +156,18 @@ int renderer() {
 
         //minor // Transforming the matrix and sending it to vertex.vert ^-^ //
 
-        transformationMatrix = glm::rotate(unitMatrix, static_cast<float>(glfwGetTime()), glm::vec3(0.5, 1, 0.25));
+        static const glm::mat4 unitMatrix = glm::mat4(1);
+        glm::mat4 transformationMatrix = unitMatrix;
+
+        transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-0.5, 0.5, 0));
+        transformationMatrix = glm::rotate(transformationMatrix, static_cast<float>(glfwGetTime()), glm::vec3(0, 0, 1));
         transformationMatrix = glm::scale(transformationMatrix, glm::vec3(0.75, 0.75, 1));
 
-        vector = transformationMatrix*vector;
+        shader.setUniform("transformationMatrix", transformationMatrix);
 
-        int transformationLocation = glGetUniformLocation(shader.shaderProgramId, "transformationMatrix");
-        glUniformMatrix4fv(transformationLocation, 1, GL_FALSE, glm::value_ptr(transformationMatrix)); //todo // Update the shader.hpp //
+        //minor // Drawing the triangle/quad //
 
-        //minor // Using the shader //
-
-        shader.use();
+        //shader.use();
 
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
