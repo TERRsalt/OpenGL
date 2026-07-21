@@ -7,10 +7,12 @@ layout (location = 2) in vec2 aTextureCoordinates;
 out vec3 CustomColor;
 out vec2 TextureCoordinates;
 
-uniform mat4 transformationMatrix;
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProjection;
 
 void main() {
-    gl_Position = transformationMatrix*vec4(aPosition, 1);
+    gl_Position = uProjection*uView*uModel*vec4(aPosition, 1);
     CustomColor = aColor;
     TextureCoordinates = aTextureCoordinates;
 }

@@ -154,20 +154,25 @@ int renderer() {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
-        //minor // Transforming the matrix and sending it to vertex.vert ^-^ //
+        shader.use();
+
+        //minor // Transforming the matrixes and sending it to vertex.vert ^-^ //
 
         static const glm::mat4 unitMatrix = glm::mat4(1);
-        glm::mat4 transformationMatrix = unitMatrix;
 
-        transformationMatrix = glm::translate(transformationMatrix, glm::vec3(-0.5, 0.5, 0));
-        transformationMatrix = glm::rotate(transformationMatrix, static_cast<float>(glfwGetTime()), glm::vec3(0, 0, 1));
-        transformationMatrix = glm::scale(transformationMatrix, glm::vec3(0.75, 0.75, 1));
+        glm::mat4 model = unitMatrix;
+        //model = glm::translate(model, glm::vec3(-0.5, 0.5, 0));
+        model = glm::rotate(model, -static_cast<float>(glfwGetTime()*0.5), glm::vec3(1, 0.75, 0.5));
+        //model = glm::scale(model, glm::vec3(0.75, 0.75, 1));
+        shader.setUniform("uModel", model);
 
-        shader.setUniform("transformationMatrix", transformationMatrix);
+        glm::mat4 view = glm::translate(unitMatrix, glm::vec3(0, 0, -3));
+        shader.setUniform("uView", view);
+
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH)/static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
+        shader.setUniform("uProjection", projection);
 
         //minor // Drawing the triangle/quad //
-
-        //shader.use();
 
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
