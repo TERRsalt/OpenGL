@@ -46,6 +46,10 @@ int renderer() {
         return -1;
     }
 
+    //info // Depth testing //
+
+    glEnable(GL_DEPTH_TEST);
+
     //info // Shaders //
 
     Shader shader("source/shaders/vertex.vert", "source/shaders/fragment.frag");
@@ -55,7 +59,7 @@ int renderer() {
 
     //minor // Vertices with colors and texture coordinates //
 
-    // float vertices[] = { //minor // Vertices for triangle //
+    // float vertices[] = { //minor // Vertices for the triangle //
     //     0, 0.5, 0,
     //     1, 0, 0,
     //     0.5, 1,
@@ -69,29 +73,162 @@ int renderer() {
     //     1, 0
     // };
 
-    float vertices[] = { //minor // Vertices for quad //
-        -0.5, 0.5, 0,
-        1, 0, 0,
-        0, 1,
+    // float vertices[] = { //minor // Vertices for the quad //
+    //     -0.5, 0.5, 0,
+    //     1, 0, 0,
+    //     0, 1,
+    //
+    //     -0.5, -0.5, 0,
+    //     0, 1, 0,
+    //     0, 0,
+    //
+    //     0.5, -0.5, 0,
+    //     1, 0, 0,
+    //     1, 0,
+    //
+    //     0.5, 0.5, 0,
+    //     0, 0, 1,
+    //     1, 1
+    // };
+    // unsigned int indices[] = { //minor // Indices for the quad //
+    //     0, 1, 2,
+    //     0, 2, 3
+    // };
 
-        -0.5, -0.5, 0,
-        0, 1, 0,
+    float vertices[] = { //minor // Vertices for the cube //
+        //minor // Front face //
+
+        -0.5, -0.5, 0.5,
+        1, 0, 0,
         0, 0,
 
-        0.5, -0.5, 0,
-        1, 0, 0,
+        0.5, -0.5, 0.5,
+        0, 1, 0,
         1, 0,
 
-        0.5, 0.5, 0,
+        0.5, 0.5, 0.5,
         0, 0, 1,
-        1, 1
+        1, 1,
+
+        -0.5, 0.5, 0.5,
+        1, 1, 0,
+        0, 1,
+
+        //minor // Back face //
+
+        0.5, -0.5, -0.5,
+        1, 0, 0,
+        0, 0,
+
+        -0.5, -0.5, -0.5,
+        0, 1, 0,
+        1, 0,
+
+        -0.5, 0.5, -0.5,
+        0, 0, 1,
+        1, 1,
+
+        0.5, 0.5, -0.5,
+        1, 1, 0,
+        0, 1,
+
+        //minor // Left face //
+
+        -0.5, -0.5, -0.5,
+        1, 0, 0,
+        0, 0,
+
+        -0.5, -0.5, 0.5,
+        0, 1, 0,
+        1, 0,
+
+        -0.5, 0.5, 0.5,
+        0, 0, 1,
+        1, 1,
+
+        -0.5, 0.5, -0.5,
+        1, 1, 0,
+        0, 1,
+
+        //minor // Right face //
+
+        0.5, -0.5, 0.5,
+        1, 0, 0,
+        0, 0,
+
+        0.5, -0.5, -0.5,
+        0, 1, 0,
+        1, 0,
+
+        0.5, 0.5, -0.5,
+        0, 0, 1,
+        1, 1,
+
+        0.5, 0.5, 0.5,
+        1, 1, 0,
+        0, 1,
+
+        //minor // Top face //
+
+        -0.5, 0.5, 0.5,
+        1, 0, 0,
+        0, 0,
+
+        0.5, 0.5, 0.5,
+        0, 1, 0,
+        1, 0,
+        
+        0.5, 0.5, -0.5,
+        0, 0, 1,
+        1, 1,
+
+        -0.5, 0.5, -0.5,
+        1, 1, 0,
+        0, 1,
+
+        //minor // Bottom face //
+        
+        -0.5, -0.5, -0.5,
+        1, 0, 0,
+        0, 0,
+
+        0.5, -0.5, -0.5,
+        0, 1, 0,
+        1, 0,
+
+        0.5, -0.5, 0.5,
+        0, 0, 1,
+        1, 1,
+
+        -0.5, -0.5, 0.5,
+        1, 1, 0,
+        0, 1
     };
 
-    //minor // Indices //
-
     unsigned int indices[] = {
+        //minor // Front face //
         0, 1, 2,
-        0, 2, 3
+        0, 2, 3,
+
+        //minor // Back face //
+        4, 5, 6,
+        4, 6, 7,
+
+        //minor // Left face //
+        8, 9, 10,
+        8, 10, 11,
+
+        //minor // Right face //
+        12, 13, 14,
+        12, 14, 15,
+
+        //minor // Top face //
+        16, 17, 18,
+        16, 18, 19,
+
+        //minor // Bottom face //
+        20, 21, 22,
+        20, 22, 23
     };
 
     //info // Vertex and buffer(s) data //
@@ -145,7 +282,7 @@ int renderer() {
         //minor // Clearing the screen (and painting it with some color) //
 
         glClearColor(backgroundColor["red"], backgroundColor["green"], backgroundColor["blue"], 1);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //minor // Drawing the object(s) //
 
@@ -162,7 +299,8 @@ int renderer() {
 
         glm::mat4 model = unitMatrix;
         //model = glm::translate(model, glm::vec3(-0.5, 0.5, 0));
-        model = glm::rotate(model, -static_cast<float>(glfwGetTime()*0.5), glm::vec3(1, 0.75, 0.5));
+        //model = glm::rotate(model, -static_cast<float>(glfwGetTime()*0.5), glm::vec3(1, 0.75, 0.5));
+        model = glm::rotate(model, static_cast<float>(glfwGetTime()*0.75), glm::vec3(1, 0.5, 0.25));
         //model = glm::scale(model, glm::vec3(0.75, 0.75, 1));
         shader.setUniform("uModel", model);
 
@@ -176,7 +314,8 @@ int renderer() {
 
         glBindVertexArray(vao);
         //glDrawArrays(GL_TRIANGLES, 0, 3); //exp // Drawing the triangle //
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing the quad //
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr); //exp // Drawing the quad //
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr); //exp // Drawing the cube //
 
         //minor // Check for events, call events and swap the buffers //
 
