@@ -39,7 +39,10 @@ add_executable(${PROJECT_NAME} source/_MAIN_.cpp
     #minor # shaders/ #
 
     source/shaders/renderer.cpp
+
     source/shaders/texture.cpp
+
+    source/shaders/vertices.cpp
 
     #minor # _vendor_/ #
 

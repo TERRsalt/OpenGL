@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include "keyboard.hpp"
 #include "random.hpp"
 
 //info // Functions and variables for the input //
@@ -30,6 +31,25 @@ static void wireframeMode() {
     }
 }
 
+std::vector<glm::vec3> cubes = {
+    { 0, 0, 0},
+    { 2, 5, -15},
+    {-1.5, -2.2, -2.5},
+    {-3.8, -2, -12.3},
+    { 2.4, -0.4, -3.5},
+    {-1.7, 3, -7.5},
+    { 1.3, -2, -2.5},
+    { 1.5, 2, -2.5},
+    { 1.5, 0.2, -1.5},
+    {-1.3, 1, -1.5}
+};
+static void randomCubes() {
+    float randomCoordinates[3] = {randomFloat(10)-5, randomFloat(10)-5, -randomFloat(10)};
+    cubes.emplace_back(randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);
+
+    std::println("Placed a cube in [ {} {} {} ] location", randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);
+}
+
 //info // Input //
 
 static std::map<int, bool> wasPressedMap;
@@ -48,4 +68,6 @@ void processInput(GLFWwindow *window) {
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_R)) backgroundColor = randomRgbColor();
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_W)) wireframeMode();
+
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_C)) randomCubes();
 }
