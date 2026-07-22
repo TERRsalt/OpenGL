@@ -109,7 +109,7 @@ int renderer() {
 
         //minor // Drawing the object(s) //
 
-        glActiveTexture(GL_TEXTURE1);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, dirtTexture);
 
         //shader.use();
@@ -118,10 +118,10 @@ int renderer() {
 
         static const glm::mat4 unitMatrix = glm::mat4(1);
 
-        glm::mat4 view = glm::translate(unitMatrix, glm::vec3(0, 0, -3));
+        glm::mat4 view = glm::translate(unitMatrix, glm::vec3(0, 0, -2.5));
         shader.setUniform("uView", view);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(SCREEN_WIDTH)/static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCREEN_WIDTH)/static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
         shader.setUniform("uProjection", projection);
 
         //minor // Drawing the triangle/quad/cube(s) //

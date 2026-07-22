@@ -2,8 +2,8 @@
 #include <map>
 
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
-#include "keyboard.hpp"
 #include "random.hpp"
 
 //info // Functions and variables for the input //
