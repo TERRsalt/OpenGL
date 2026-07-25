@@ -8,6 +8,6 @@
 
 extern glm::vec3 backgroundColor;
 
-void processInput(GLFWwindow *window);
+void processingTheInput(GLFWwindow *window);
 
 extern std::vector<glm::vec3> cubes;

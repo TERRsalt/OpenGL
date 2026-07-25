@@ -30,6 +30,10 @@ FetchContent_MakeAvailable(glm)
 #info # Executable #
 
 add_executable(${PROJECT_NAME} source/_MAIN_.cpp
+    source/camera.cpp
+
+    source/deltaTime.cpp
+
     source/files.cpp
 
     source/keyboard.cpp

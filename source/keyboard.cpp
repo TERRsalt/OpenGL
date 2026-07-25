@@ -1,4 +1,5 @@
 #include <print>
+#include <map>
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -68,12 +69,12 @@ static bool wasKeyboardButtonPressed(GLFWwindow *window, int key) {
     return justPressed;
 }
 
-void processInput(GLFWwindow *window) {
+void processingTheInput(GLFWwindow *window) {
     if (wasKeyboardButtonPressed(window, GLFW_KEY_ESCAPE)) exitTheApp(window);
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_R)) backgroundColor = randomRgbColor();
 
-    else if (wasKeyboardButtonPressed(window, GLFW_KEY_W)) wireframeMode();
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_Q)) wireframeMode();
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_C)) randomCubes();
 }

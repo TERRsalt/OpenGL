@@ -12,6 +12,8 @@
 
 #include "../files.hpp"
 #include "../keyboard.hpp"
+#include "../camera.hpp"
+#include "../deltaTime.hpp"
 
 #include "renderer.hpp"
 #include "shader.hpp"
@@ -97,16 +99,19 @@ int renderer() {
     unsigned int dirtTexture = texture("assets/dirt.png", GL_NEAREST);
     shader.setUniform("uTexture", 0);
 
-    //info // Camera //
-
-    glm::vec3 cameraPosition = glm::vec3(0, 0, 3);
-    glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
-    glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
-
     //info // Running the window //
 
     while (!glfwWindowShouldClose(window)) {
-        processInput(window);
+        //minor // Delta time //
+
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        //minor // Processing the input //
+
+        processingTheInput(window);
+        moving(window);
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -122,9 +127,9 @@ int renderer() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
-        static const glm::mat4 unitMatrix = glm::mat4(1);
+        const glm::mat4 unitMatrix = glm::mat4(1);
 
-        glm::mat4 view = glm::translate(unitMatrix, glm::vec3(0, 0, -2.5));
+        glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
         shader.setUniform("uView", view);
 
         glm::mat4 projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
