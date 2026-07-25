@@ -14,14 +14,12 @@
 #include "../keyboard.hpp"
 #include "../camera.hpp"
 #include "../deltaTime.hpp"
+#include "../screen.hpp"
 
 #include "renderer.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
 #include "vertices.hpp"
-
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
 
 int renderer() {
     glfwInit();
@@ -31,7 +29,7 @@ int renderer() {
 
     //info // Window //
 
-    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::println("Failed to create GLFW window");
         glfwTerminate();
@@ -52,6 +50,13 @@ int renderer() {
     //info // Depth testing //
 
     glEnable(GL_DEPTH_TEST);
+
+    //info // Capturing the mouse and picking the mouse movements //
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetCursorPosCallback(window, cameraMovement);
+    glfwSetScrollCallback(window, zoomingInAndOut);
 
     //info // Shaders //
 
@@ -111,7 +116,7 @@ int renderer() {
         //minor // Processing the input //
 
         processingTheInput(window);
-        moving(window);
+        movement(window);
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -132,7 +137,6 @@ int renderer() {
         glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
         shader.setUniform("uView", view);
 
-        glm::mat4 projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
         shader.setUniform("uProjection", projection);
 
         //minor // Drawing the triangle/quad/cube(s) //

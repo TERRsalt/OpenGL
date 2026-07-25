@@ -40,6 +40,8 @@ add_executable(${PROJECT_NAME} source/_MAIN_.cpp
 
     source/random.cpp
 
+    source/screen.cpp
+
     #minor # shaders/ #
 
     source/shaders/renderer.cpp
