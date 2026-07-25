@@ -6,7 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-extern std::map<std::string, float> backgroundColor;
+extern glm::vec3 backgroundColor;
 
 void processInput(GLFWwindow *window);
 

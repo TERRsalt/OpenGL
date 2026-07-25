@@ -1,5 +1,4 @@
 #include <print>
-#include <map>
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -14,7 +13,14 @@ static void exitTheApp(GLFWwindow *window) {
     std::println("Closed app");
 }
 
-std::map<std::string, float> backgroundColor = {{"red", 1}, {"green", 1}, {"blue", 1}};
+glm::vec3 backgroundColor = {1, 1, 1};
+static glm::vec3 randomRgbColor() {
+    glm::vec3 randomColor = {randomFloat(1), randomFloat(1), randomFloat(1)};
+
+    std::println("Changed the color to RGB({}, {}, {})", randomColor.r, randomColor.g, randomColor.b);
+
+    return randomColor;
+}
 
 static void wireframeMode() {
     static bool wireframeModeOn = false;
@@ -44,7 +50,7 @@ std::vector<glm::vec3> cubes = {
     {-1.3, 1, -1.5}
 };
 static void randomCubes() {
-    float randomCoordinates[3] = {randomFloat(10)-5, randomFloat(10)-5, -randomFloat(10)};
+    float randomCoordinates[3] = {randomFloat(10) - 5, randomFloat(10) - 5, -randomFloat(10)};
     cubes.emplace_back(randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);
 
     std::println("Placed a cube in [ {} {} {} ] location", randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);

@@ -33,7 +33,7 @@ int renderer() {
     if (window == nullptr) {
         std::println("Failed to create GLFW window");
         glfwTerminate();
-        return -1;
+        return - 1;
     }
 
     glfwMakeContextCurrent(window);
@@ -44,7 +44,7 @@ int renderer() {
     glewExperimental = GL_TRUE;
     if (glewInit() != GLEW_OK) {
         std::println("Failed to initialize GLEW");
-        return -1;
+        return - 1;
     }
 
     //info // Depth testing //
@@ -70,21 +70,21 @@ int renderer() {
     glBindVertexArray(vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float)*vertices.size()), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<int>(sizeof(unsigned int)*indices.size()), indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<int>(sizeof(unsigned int) * indices.size()), indices.data(), GL_STATIC_DRAW);
 
     //exp // Position attributes //
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
     //exp // Color attributes //
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8*sizeof(float), reinterpret_cast<void*>(3*sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     //exp // Texture attributes //
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8*sizeof(float), reinterpret_cast<void*>(6*sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); //exp // Unbinding the VBO and VAO //
@@ -97,6 +97,12 @@ int renderer() {
     unsigned int dirtTexture = texture("assets/dirt.png", GL_NEAREST);
     shader.setUniform("uTexture", 0);
 
+    //info // Camera //
+
+    glm::vec3 cameraPosition = glm::vec3(0, 0, 3);
+    glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
+    glm::vec3 cameraDirection = glm::normalize(cameraPosition - cameraTarget);
+
     //info // Running the window //
 
     while (!glfwWindowShouldClose(window)) {
@@ -104,7 +110,7 @@ int renderer() {
 
         //minor // Clearing the screen (and painting it with some color) //
 
-        glClearColor(backgroundColor["red"], backgroundColor["green"], backgroundColor["blue"], 1);
+        glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //minor // Drawing the object(s) //
@@ -121,7 +127,7 @@ int renderer() {
         glm::mat4 view = glm::translate(unitMatrix, glm::vec3(0, 0, -2.5));
         shader.setUniform("uView", view);
 
-        glm::mat4 projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCREEN_WIDTH)/static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(60.0f), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
         shader.setUniform("uProjection", projection);
 
         //minor // Drawing the triangle/quad/cube(s) //
@@ -134,7 +140,7 @@ int renderer() {
         //exp // Drawing the cube(s) //
         for (int i = 0; i < cubes.size(); i++) {
             glm::mat4 model = glm::translate(unitMatrix, cubes[i]);
-            model = glm::rotate(model, glm::radians(20.0f*static_cast<float>(i)+static_cast<float>(glfwGetTime()*25)), glm::vec3(1, 0.3, 0.5));
+            model = glm::rotate(model, glm::radians(20.0f * static_cast<float>(i) + static_cast<float>(glfwGetTime() * 25)), glm::vec3(1, 0.3, 0.5));
 
             shader.setUniform("uModel", model);
             glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
@@ -163,4 +169,4 @@ int renderer() {
     return 0;
 }
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height) {glViewport(0, 0, width, height);}
+void framebufferSizeCallback(GLFWwindow *window, int width, int height) {glViewport(0, 0, width, height);}

@@ -3,11 +3,11 @@
 #include <GL/glew.h>
 #include "stb_image.h"
 
-unsigned int texture(const char* textureFilePath, int nearestOrLinear) {
+unsigned int texture(const char *textureFilePath, int nearestOrLinear) {
     unsigned int currentTexture;
 
     int width, height, numberOfChannels;
-    unsigned char* data;
+    unsigned char *data;
 
     glGenTextures(1, &currentTexture);
     glActiveTexture(GL_TEXTURE0);
