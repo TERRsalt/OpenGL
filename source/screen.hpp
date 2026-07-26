@@ -1,3 +1,3 @@
 #pragma once
 
-extern const unsigned int screenWidth, screenHeight;
+constexpr unsigned int screenWidth = 800, screenHeight = 600;

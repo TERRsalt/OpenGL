@@ -30,7 +30,6 @@ FetchContent_MakeAvailable(glm)
 #info # Executable #
 
 add_executable(${PROJECT_NAME} source/_MAIN_.cpp
-    source/camera.cpp
 
     source/deltaTime.cpp
 
@@ -39,8 +38,6 @@ add_executable(${PROJECT_NAME} source/_MAIN_.cpp
     source/keyboard.cpp
 
     source/random.cpp
-
-    source/screen.cpp
 
     #minor # shaders/ #
 

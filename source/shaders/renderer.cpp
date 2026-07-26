@@ -51,13 +51,6 @@ int renderer() {
 
     glEnable(GL_DEPTH_TEST);
 
-    //info // Capturing the mouse and picking the mouse movements //
-
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    glfwSetCursorPosCallback(window, cameraMovement);
-    glfwSetScrollCallback(window, zoomingInAndOut);
-
     //info // Shaders //
 
     Shader shader("source/shaders/vertex.vert", "source/shaders/fragment.frag");
@@ -104,19 +97,28 @@ int renderer() {
     unsigned int dirtTexture = texture("assets/dirt.png", GL_NEAREST);
     shader.setUniform("uTexture", 0);
 
+    //info // Camera //
+
+    Camera camera;
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetWindowUserPointer(window, &camera);
+    glfwSetCursorPosCallback(window, Camera::cameraMovement);
+    glfwSetScrollCallback(window, Camera::zoomingInAndOut);
+
     //info // Running the window //
 
     while (!glfwWindowShouldClose(window)) {
         //minor // Delta time //
 
-        currentFrame = glfwGetTime();
+        currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         //minor // Processing the input //
 
         processingTheInput(window);
-        movement(window);
+        camera.characterMovement(window);
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -134,10 +136,10 @@ int renderer() {
 
         const glm::mat4 unitMatrix = glm::mat4(1);
 
-        glm::mat4 view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+        glm::mat4 view = glm::lookAt(camera.cameraPosition, camera.cameraPosition + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
 
-        shader.setUniform("uProjection", projection);
+        shader.setUniform("uProjection", camera.projection);
 
         //minor // Drawing the triangle/quad/cube(s) //
 
