@@ -29,27 +29,22 @@ FetchContent_MakeAvailable(glm)
 
 #info # Executable #
 
-add_executable(${PROJECT_NAME} source/_MAIN_.cpp
-
-    source/deltaTime.cpp
-
+add_executable(${PROJECT_NAME} source/main.cpp
     source/files.cpp
+
+    source/init.cpp
 
     source/keyboard.cpp
 
     source/random.cpp
 
-    #minor # shaders/ #
+    source/time.cpp
 
-    source/shaders/renderer.cpp
+    source/vertices.cpp
 
-    source/shaders/texture.cpp
+    #minor # vendor/ #
 
-    source/shaders/vertices.cpp
-
-    #minor # _vendor_/ #
-
-    source/_vendor_/stb_image.cpp
+    vendor/stb_image.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
@@ -63,4 +58,4 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 #exp # Only for final compilation #
 #file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/source/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/source")
+#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")

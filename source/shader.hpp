@@ -4,7 +4,7 @@
 
 #include <GL/glew.h>
 
-#include "../files.hpp"
+#include "files.hpp"
 
 class Shader {
 public:

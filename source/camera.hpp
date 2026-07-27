@@ -6,8 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "deltaTime.hpp"
 #include "screen.hpp"
+#include "time.hpp"
 
 class Camera {
 public:
@@ -73,7 +73,7 @@ public:
     //info // Character movement //
 
     void characterMovement(GLFWwindow *window) {
-        float characterSpeedDeltaTime = characterSpeed * deltaTime;
+        float characterSpeedDeltaTime = characterSpeed * gameTime.deltaTime;
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
         else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
