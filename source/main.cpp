@@ -16,7 +16,7 @@
 #include "init.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
-#include "vertices.hpp"
+#include "blocks.hpp"
 #include "mesh.hpp"
 #include "time.hpp"
 
@@ -30,13 +30,13 @@ int main() {
 
     //info // Vertex and buffer(s) data //
 
-    Mesh mesh(vertices, indices);
+    Mesh mesh(blocks["grass"], indices);
 
     //info // Textures //
 
     stbi_set_flip_vertically_on_load(true);
 
-    Texture texture("assets/dirt.png", GL_NEAREST);
+    Texture texture("assets/atlas.png", GL_NEAREST);
     shader.setUniform("uTexture", 0);
 
     texture.bind(0);
@@ -79,14 +79,12 @@ int main() {
 
         //minor // Drawing the triangle/quad/cube(s) //
 
-        //exp // Drawing the cube(s) //
-        for (int i = 0; i < cubes.size(); i++) {
-            glm::mat4 model = glm::translate(unitMatrix, cubes[i]);
-            model = glm::rotate(model, glm::radians(20.0f * static_cast<float>(i) + static_cast<float>(glfwGetTime() * 25)), glm::vec3(1, 0.3, 0.5));
-
-            shader.setUniform("uModel", model);
-
-            mesh.draw();
+        for (int i = -50; i <= 50; i++) {
+            for (int j = -50; j <= 50; j++) {
+                glm::mat4 model = glm::translate(unitMatrix, glm::vec3(i, -2, j));
+                shader.setUniform("uModel", model);
+                mesh.draw();
+            }
         }
 
         //minor // Check for events, call events and swap the buffers //

@@ -76,5 +76,5 @@ void processingTheInput(GLFWwindow *window) {
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_Q)) wireframeMode();
 
-    else if (wasKeyboardButtonPressed(window, GLFW_KEY_C)) randomCubes();
+    //else if (wasKeyboardButtonPressed(window, GLFW_KEY_C)) randomCubes();
 }

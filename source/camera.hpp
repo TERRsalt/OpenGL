@@ -11,7 +11,7 @@
 
 class Camera {
 public:
-    glm::vec3 cameraPosition = glm::vec3(0, 0, 2.5), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
+    glm::vec3 cameraPosition = glm::vec3(0, 0, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
     float fov;
     glm::mat4 projection;
 

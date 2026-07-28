@@ -1,0 +1,179 @@
+#include <vector>
+#include <map>
+#include <string>
+
+#include <glm/glm.hpp>
+
+//info // Generating block from texture atlas //
+
+glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
+    constexpr unsigned int atlasSize = 16;
+
+    float flippedY = atlasSize - 1 - textureCoordinates.y;
+    constexpr float epsilon = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
+
+    return {
+        (textureCoordinates.x + epsilon) / atlasSize,
+        (textureCoordinates.x + 1 - epsilon) / atlasSize,
+        (flippedY + epsilon) / atlasSize,
+        (flippedY + 1 - epsilon) / atlasSize
+    };
+}
+
+std::vector<float> blockGenerator(glm::ivec2 frontTextureCoordinates, glm::ivec2 backTextureCoordinates,
+    glm::ivec2 leftTextureCoordinates, glm::ivec2 rightTextureCoordinates, glm::ivec2 topTextureCoordinates, glm::ivec2 bottomTextureCoordinates) {
+    glm::vec4 frontTexture = getTextureFromAtlas(frontTextureCoordinates), backTexture = getTextureFromAtlas(backTextureCoordinates);
+    glm::vec4 leftTexture = getTextureFromAtlas(leftTextureCoordinates), rightTexture = getTextureFromAtlas(rightTextureCoordinates);
+    glm::vec4 topTexture = getTextureFromAtlas(topTextureCoordinates), bottomTexture = getTextureFromAtlas(bottomTextureCoordinates);;
+
+    return {
+        //minor // Front face //
+
+        -0.5, -0.5, 0.5,
+        1, 0, 0,
+        frontTexture[0], frontTexture[2],
+
+        0.5, -0.5, 0.5,
+        0, 1, 0,
+        frontTexture[1], frontTexture[2],
+
+        0.5, 0.5, 0.5,
+        0, 0, 1,
+        frontTexture[1], frontTexture[3],
+
+        -0.5, 0.5, 0.5,
+        1, 1, 0,
+        frontTexture[0], frontTexture[3],
+
+        //minor // Back face //
+
+        0.5, -0.5, -0.5,
+        1, 0, 0,
+        backTexture[0], backTexture[2],
+
+        -0.5, -0.5, -0.5,
+        0, 1, 0,
+        backTexture[1], backTexture[2],
+
+        -0.5, 0.5, -0.5,
+        0, 0, 1,
+        backTexture[1], backTexture[3],
+
+        0.5, 0.5, -0.5,
+        1, 1, 0,
+        backTexture[0], backTexture[3],
+
+        //minor // Left face //
+
+        -0.5, -0.5, -0.5,
+        1, 0, 0,
+        leftTexture[0], leftTexture[2],
+
+        -0.5, -0.5, 0.5,
+        0, 1, 0,
+        leftTexture[1], leftTexture[2],
+
+        -0.5, 0.5, 0.5,
+        0, 0, 1,
+        leftTexture[1], leftTexture[3],
+
+        -0.5, 0.5, -0.5,
+        1, 1, 0,
+        leftTexture[0], leftTexture[3],
+
+        //minor // Right face //
+
+        0.5, -0.5, 0.5,
+        1, 0, 0,
+        rightTexture[0], rightTexture[2],
+
+        0.5, -0.5, -0.5,
+        0, 1, 0,
+        rightTexture[1], rightTexture[2],
+
+        0.5, 0.5, -0.5,
+        0, 0, 1,
+        rightTexture[1], rightTexture[3],
+
+        0.5, 0.5, 0.5,
+        1, 1, 0,
+        rightTexture[0], rightTexture[3],
+
+        //minor // Top face //
+
+        -0.5, 0.5, 0.5,
+        1, 0, 0,
+        topTexture[0], topTexture[2],
+
+        0.5, 0.5, 0.5,
+        0, 1, 0,
+        topTexture[1], topTexture[2],
+
+        0.5, 0.5, -0.5,
+        0, 0, 1,
+        topTexture[1], topTexture[3],
+
+        -0.5, 0.5, -0.5,
+        1, 1, 0,
+        topTexture[0], topTexture[3],
+
+        //minor // Bottom face //
+
+        -0.5, -0.5, -0.5,
+        1, 0, 0,
+        bottomTexture[0], bottomTexture[2],
+
+        0.5, -0.5, -0.5,
+        0, 1, 0,
+        bottomTexture[1], bottomTexture[2],
+
+        0.5, -0.5, 0.5,
+        0, 0, 1,
+        bottomTexture[1], bottomTexture[3],
+
+        -0.5, -0.5, 0.5,
+        1, 1, 0,
+        bottomTexture[0], bottomTexture[3]
+    };
+}
+
+//info // Indices //
+
+std::vector<unsigned int> indices = {
+    //minor // Front face //
+    0, 1, 2,
+    0, 2, 3,
+
+    //minor // Back face //
+    4, 5, 6,
+    4, 6, 7,
+
+    //minor // Left face //
+    8, 9, 10,
+    8, 10, 11,
+
+    //minor // Right face //
+    12, 13, 14,
+    12, 14, 15,
+
+    //minor // Top face //
+    16, 17, 18,
+    16, 18, 19,
+
+    //minor // Bottom face //
+    20, 21, 22,
+    20, 22, 23
+};
+
+//info // Blocks //
+
+std::map<std::string, std::vector<float>> blocks = {
+    {"dirt", blockGenerator({2, 0}, {2, 0},
+        {2, 0}, {2, 0}, {2, 0}, {2, 0})},
+
+    {"grass", blockGenerator({3, 0}, {3, 0},
+        {3, 0}, {3, 0}, {8, 2}, {2, 0})},
+
+    {"wood", blockGenerator({4, 1}, {4, 1},
+        {4, 1}, {4, 1}, {5, 1}, {5, 1})}
+};

@@ -30,6 +30,8 @@ FetchContent_MakeAvailable(glm)
 #info # Executable #
 
 add_executable(${PROJECT_NAME} source/main.cpp
+    source/blocks.cpp
+
     source/files.cpp
 
     source/init.cpp
@@ -39,8 +41,6 @@ add_executable(${PROJECT_NAME} source/main.cpp
     source/random.cpp
 
     source/time.cpp
-
-    source/vertices.cpp
 
     #minor # vendor/ #
 
