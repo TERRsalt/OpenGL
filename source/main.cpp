@@ -31,7 +31,7 @@ int main() {
 
     //info // Vertex and buffer(s) data //
 
-    Mesh mesh(blocks["grass"], indices);
+    Mesh mesh(indices);
 
     //info // Textures //
 

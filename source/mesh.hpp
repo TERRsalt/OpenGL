@@ -11,7 +11,7 @@ public:
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    Mesh(std::vector<float> &vertices, const std::vector<unsigned int> &indices): vertices(vertices), indices(indices) {
+    Mesh(const std::vector<unsigned int> &indices): indices(indices) {
         glGenBuffers(1, &vbo);
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &ebo);
@@ -20,8 +20,8 @@ public:
 
         glBindVertexArray(vao);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo); //exp // This needs to be here or else there will be the black screen //
+        //glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<int>(sizeof(unsigned int) * indices.size()), indices.data(), GL_STATIC_DRAW);
@@ -38,7 +38,7 @@ public:
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
 
@@ -54,6 +54,8 @@ public:
     }
 
     void updateVertices(const std::vector<float> &newVertices) const {
+        if (newVertices == vertices) return;
+
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * newVertices.size()), newVertices.data(), GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);

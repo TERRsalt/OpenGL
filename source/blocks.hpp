@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 extern std::vector<unsigned int> indices;
 
