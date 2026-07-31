@@ -15,7 +15,7 @@ GLFWwindow *init() {
 
     //info // Window //
 
-    GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::println("Failed to create GLFW window");
         glfwTerminate();

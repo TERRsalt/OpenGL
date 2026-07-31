@@ -5,13 +5,22 @@
 #include <glm/glm.hpp>
 
 #include "random.hpp"
+#include "camera.hpp"
 
 //info // Functions and variables for the input //
 
-static void exitTheApp(GLFWwindow *window) {
-    glfwSetWindowShouldClose(window, true);
+static void pause(GLFWwindow *window) {
+    static bool isPaused = false;
+    isPaused = !isPaused;
 
-    std::println("Closed app");
+    if (isPaused == false) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPosCallback(window, Camera::cameraMovement);
+    }
+    else {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetCursorPosCallback(window, nullptr);
+    }
 }
 
 glm::vec3 backgroundColor = {1, 1, 1};
@@ -70,7 +79,7 @@ static bool wasKeyboardButtonPressed(GLFWwindow *window, int key) {
 }
 
 void processingTheInput(GLFWwindow *window) {
-    if (wasKeyboardButtonPressed(window, GLFW_KEY_ESCAPE)) exitTheApp(window);
+    if (wasKeyboardButtonPressed(window, GLFW_KEY_ESCAPE)) pause(window);
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_R)) backgroundColor = randomRgbColor();
 

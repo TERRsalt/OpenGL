@@ -11,7 +11,7 @@ public:
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    Mesh(const std::vector<float> &vertices, const std::vector<unsigned int> &indices): vertices(vertices), indices(indices) {
+    Mesh(std::vector<float> &vertices, const std::vector<unsigned int> &indices): vertices(vertices), indices(indices) {
         glGenBuffers(1, &vbo);
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &ebo);
@@ -51,5 +51,11 @@ public:
     void draw() const {
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+
+    void updateVertices(const std::vector<float> &newVertices) const {
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * newVertices.size()), newVertices.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 };

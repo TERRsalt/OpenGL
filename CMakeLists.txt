@@ -32,6 +32,8 @@ FetchContent_MakeAvailable(glm)
 add_executable(${PROJECT_NAME} source/main.cpp
     source/blocks.cpp
 
+    source/camera.cpp
+
     source/files.cpp
 
     source/init.cpp

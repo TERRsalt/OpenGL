@@ -9,9 +9,11 @@
 #include "screen.hpp"
 #include "time.hpp"
 
+static constexpr float FOV = 75;
+
 class Camera {
 public:
-    glm::vec3 cameraPosition = glm::vec3(0, 0, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
+    glm::vec3 cameraPosition = glm::vec3(0, 2, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
     float fov;
     glm::mat4 projection;
 
@@ -20,8 +22,8 @@ public:
 
     float characterSpeed;
 
-    Camera(float fov = 60, float sensitivity = 0.1, float renderDistance = 100, float characterSpeed = 5):
-        fov(fov), projection(glm::perspective(glm::radians(fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, renderDistance)),
+    Camera(float fov = FOV, float sensitivity = 0.1, float renderDistance = 100, float characterSpeed = 5):
+        fov(fov), projection(glm::perspective(glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, renderDistance)),
         sensitivity(sensitivity), characterSpeed(characterSpeed) {}
 
     //info // Camera movement //
@@ -59,15 +61,11 @@ public:
 
     //minor // Zooming in and out //
 
-    static void zoomingInAndOut(GLFWwindow *window, double offsetX, double offsetY) {
-        auto *camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    void zoomingInAndOut(GLFWwindow *window) {
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) setFovToCertainAmount(30, false);
+        else setFovToCertainAmount(FOV, true);
 
-        camera->fov -= static_cast<float>(offsetY * 5);
-
-        if (camera->fov < 30) camera->fov = 30;
-        if (camera->fov > 60) camera->fov = 60;
-
-        camera->projection = glm::perspective(glm::radians(camera->fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
     }
 
     //info // Character movement //
@@ -76,13 +74,13 @@ public:
         float characterSpeedDeltaTime = characterSpeed * gameTime.deltaTime;
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
-        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
             cameraPosition.x += cameraFront.x * characterSpeedDeltaTime;
             cameraPosition.z += cameraFront.z * characterSpeedDeltaTime;
         }
-        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
             cameraPosition.x -= cameraFront.x * characterSpeedDeltaTime;
             cameraPosition.z -= cameraFront.z * characterSpeedDeltaTime;
         }
@@ -90,4 +88,19 @@ public:
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) cameraPosition.y += characterSpeedDeltaTime;
         else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) cameraPosition.y -= characterSpeedDeltaTime;
     }
+
+private:
+    void setFovToCertainAmount(float targetFov, bool plusOrMinus) {
+        if (plusOrMinus) {
+            fov += 250 * gameTime.deltaTime;
+            if (targetFov <= fov) fov = targetFov;
+        }
+
+        else {
+            fov -= 250 * gameTime.deltaTime;
+            if (targetFov >= fov) fov = targetFov;
+        }
+    }
 };
+
+extern Camera camera;

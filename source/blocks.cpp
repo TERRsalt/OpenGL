@@ -7,16 +7,16 @@
 //info // Generating block from texture atlas //
 
 glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
-    constexpr unsigned int atlasSize = 16;
+    constexpr unsigned int ATLAS_SIZE = 16;
 
-    float flippedY = atlasSize - 1 - textureCoordinates.y;
-    constexpr float epsilon = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
+    float flippedY = ATLAS_SIZE - 1 - textureCoordinates.y;
+    constexpr float BLEED_MARGIN = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
 
     return {
-        (textureCoordinates.x + epsilon) / atlasSize,
-        (textureCoordinates.x + 1 - epsilon) / atlasSize,
-        (flippedY + epsilon) / atlasSize,
-        (flippedY + 1 - epsilon) / atlasSize
+        (textureCoordinates.x + BLEED_MARGIN) / ATLAS_SIZE,
+        (textureCoordinates.x + 1 - BLEED_MARGIN) / ATLAS_SIZE,
+        (flippedY + BLEED_MARGIN) / ATLAS_SIZE,
+        (flippedY + 1 - BLEED_MARGIN) / ATLAS_SIZE
     };
 }
 
@@ -168,6 +168,9 @@ std::vector<unsigned int> indices = {
 //info // Blocks //
 
 std::map<std::string, std::vector<float>> blocks = {
+    {"stone", blockGenerator({1, 0}, {1, 0},
+        {1, 0}, {1, 0}, {1, 0}, {1, 0})},
+
     {"dirt", blockGenerator({2, 0}, {2, 0},
         {2, 0}, {2, 0}, {2, 0}, {2, 0})},
 
