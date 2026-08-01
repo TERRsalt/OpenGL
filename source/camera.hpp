@@ -14,7 +14,7 @@ static constexpr float FOV = 75;
 class Camera {
 public:
     glm::vec3 cameraPosition = glm::vec3(0, 2, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
-    float fov;
+    float fov, renderDistance = 100;
     glm::mat4 projection;
 
     float pitch = 0, yaw = -90, sensitivity, lastMousePositionX = 0, lastMousePositionY = 0;
@@ -22,8 +22,8 @@ public:
 
     float characterSpeed;
 
-    Camera(float fov = FOV, float sensitivity = 0.1, float renderDistance = 100, float characterSpeed = 5):
-        fov(fov), projection(glm::perspective(glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, renderDistance)),
+    Camera(float fov = FOV, float sensitivity = 0.1, float characterSpeed = 5):
+        fov(fov), projection(glm::perspective(glm::radians(fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, renderDistance)),
         sensitivity(sensitivity), characterSpeed(characterSpeed) {}
 
     //info // Camera movement //
@@ -66,7 +66,7 @@ public:
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) setFovToCertainAmount(30, false);
         else setFovToCertainAmount(FOV, true);
 
-        projection = glm::perspective(glm::radians(fov), static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT), 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
     }
 
     //info // Character movement //
@@ -74,20 +74,21 @@ public:
     void characterMovement(GLFWwindow *window) {
         float characterSpeedDeltaTime = characterSpeed * gameTime.deltaTime;
 
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cameraPosition -= glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPosition += glm::normalize(glm::cross(cameraFront, cameraUp)) * characterSpeedDeltaTime;
+        glm::vec3 movingForward = glm::normalize(glm::vec3(cameraFront.x, 0, cameraFront.z));
+        glm::vec3 movingToTheRight = glm::normalize(glm::cross(cameraFront, cameraUp));
 
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            cameraPosition.x += cameraFront.x * characterSpeedDeltaTime;
-            cameraPosition.z += cameraFront.z * characterSpeedDeltaTime;
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            cameraPosition.x -= cameraFront.x * characterSpeedDeltaTime;
-            cameraPosition.z -= cameraFront.z * characterSpeedDeltaTime;
-        }
+        glm::vec3 moveDirection(0, 0, 0);
 
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) cameraPosition.y += characterSpeedDeltaTime;
-        else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) cameraPosition.y -= characterSpeedDeltaTime;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) moveDirection -= movingToTheRight;
+        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveDirection += movingToTheRight;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) moveDirection += movingForward;
+        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveDirection -= movingForward;
+
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) moveDirection.y += 1;
+        else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moveDirection.y -= 1;
+
+        if (glm::length(moveDirection) > 0) cameraPosition += glm::normalize(moveDirection) * characterSpeedDeltaTime;
     }
 
 private:

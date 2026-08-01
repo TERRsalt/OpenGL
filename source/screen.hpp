@@ -1,3 +1,3 @@
 #pragma once
 
-constexpr unsigned int SCREEN_WIDTH = 1600, SCREEN_HEIGHT = 900;
+extern int screenWidth, screenHeight;

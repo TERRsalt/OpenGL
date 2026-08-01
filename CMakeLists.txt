@@ -51,6 +51,8 @@ add_executable(${PROJECT_NAME} source/main.cpp
 
     source/random.cpp
 
+    source/screen.cpp
+
     source/time.cpp
 
     #minor # vendor/ #

@@ -3,10 +3,21 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
+#include "camera.hpp"
 #include "debugUi.hpp"
 #include "screen.hpp"
 
-static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {glViewport(0, 0, width, height);}
+static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {
+    glViewport(0, 0, width, height);
+
+    screenWidth = width;
+    screenHeight = height;
+
+    camera.projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight),
+        0.1f, camera.renderDistance);
+}
 
 GLFWwindow *init() {
     glfwInit();
@@ -16,7 +27,7 @@ GLFWwindow *init() {
 
     //info // Window //
 
-    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL", nullptr, nullptr);
+    GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "OpenGL", nullptr, nullptr);
     if (window == nullptr) {
         std::println("Failed to create GLFW window");
         glfwTerminate();
