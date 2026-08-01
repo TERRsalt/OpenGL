@@ -15,12 +15,9 @@ static void pause(GLFWwindow *window) {
 
     if (isPaused == false) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPosCallback(window, Camera::cameraMovement);
+        camera.isTheFirstTimeInCameraMovement = true;
     }
-    else {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        glfwSetCursorPosCallback(window, nullptr);
-    }
+    else glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 glm::vec3 backgroundColor = {1, 1, 1};
@@ -47,24 +44,7 @@ static void wireframeMode() {
     }
 }
 
-std::vector<glm::vec3> cubes = {
-    { 0, 0, 0},
-    { 2, 5, -15},
-    {-1.5, -2.2, -2.5},
-    {-3.8, -2, -12.3},
-    { 2.4, -0.4, -3.5},
-    {-1.7, 3, -7.5},
-    { 1.3, -2, -2.5},
-    { 1.5, 2, -2.5},
-    { 1.5, 0.2, -1.5},
-    {-1.3, 1, -1.5}
-};
-static void randomCubes() {
-    float randomCoordinates[3] = {randomFloat(10) - 5, randomFloat(10) - 5, -randomFloat(10)};
-    cubes.emplace_back(randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);
-
-    std::println("Placed a cube in [ {} {} {} ] location", randomCoordinates[0], randomCoordinates[1], randomCoordinates[2]);
-}
+bool debugMenu = false;
 
 //info // Input //
 
@@ -85,5 +65,5 @@ void processingTheInput(GLFWwindow *window) {
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_Q)) wireframeMode();
 
-    //else if (wasKeyboardButtonPressed(window, GLFW_KEY_C)) randomCubes();
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_F3)) debugMenu = !debugMenu;
 }

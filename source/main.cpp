@@ -20,6 +20,7 @@
 #include "colors.hpp"
 #include "mesh.hpp"
 #include "time.hpp"
+#include "debugUi.hpp"
 
 int main() {
     GLFWwindow *window = init();
@@ -47,7 +48,6 @@ int main() {
     //info // Camera //
 
     glfwSetWindowUserPointer(window, &camera);
-    glfwSetCursorPosCallback(window, Camera::cameraMovement);
 
     //info // Running the window //
 
@@ -60,8 +60,11 @@ int main() {
 
         processingTheInput(window);
 
-        camera.characterMovement(window);
-        camera.zoomingInAndOut(window);
+        if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
+            camera.cameraMovement(window);
+            camera.characterMovement(window);
+            camera.zoomingInAndOut(window);
+        }
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -112,6 +115,10 @@ int main() {
             }
         }
 
+        //minor // ImGui frame //
+
+        if (debugMenu) debugUi::debug();
+
         //minor // Check for events, call events and swap the buffers //
 
         glfwSwapBuffers(window);
@@ -123,6 +130,7 @@ int main() {
     shader.remove();
     mesh.remove();
     texture.remove();
+    debugUi::remove();
 
     //info // Closing the window //
 

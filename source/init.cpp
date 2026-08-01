@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "debugUi.hpp"
 #include "screen.hpp"
 
 static void framebufferSizeCallback(GLFWwindow *window, int width, int height) {glViewport(0, 0, width, height);}
@@ -40,6 +41,12 @@ GLFWwindow *init() {
     //info // Picking the mouse input //
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    //info // ImGui //
+
+    debugUi::init(window);
+
+    //info // Return window //
 
     return window;
 }

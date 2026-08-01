@@ -28,35 +28,36 @@ public:
 
     //info // Camera movement //
 
-    static void cameraMovement(GLFWwindow *window, double mousePositionX, double mousePositionY) {
-        auto *camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    void cameraMovement(GLFWwindow *window) {
+        double mouseX, mouseY;
+        glfwGetCursorPos(window, &mouseX, &mouseY);
 
-        auto mousePositionFloatX = static_cast<float>(mousePositionX), mousePositionFloatY = static_cast<float>(mousePositionY);
+        auto mouseFloatX = static_cast<float>(mouseX), mouseFloatY = static_cast<float>(mouseY);
 
-        if (camera->isTheFirstTimeInCameraMovement) { //exp // Needed to not have sudden camera jump, when starting the application //
-            camera->lastMousePositionX = mousePositionFloatX;
-            camera->lastMousePositionY = mousePositionFloatY;
-            camera->isTheFirstTimeInCameraMovement = false;
+        if (isTheFirstTimeInCameraMovement) {
+            lastMousePositionX = mouseFloatX;
+            lastMousePositionY = mouseFloatY;
+            isTheFirstTimeInCameraMovement = false;
         }
 
-        float offsetX = mousePositionFloatX - camera->lastMousePositionX;
-        float offsetY = camera->lastMousePositionY - mousePositionFloatY; //exp // Reversed for Y, because Y coordinates are going from bottom to up //
+        float offsetX = mouseFloatX - lastMousePositionX;
+        float offsetY = lastMousePositionY - mouseFloatY; //exp // Reversed for Y, because Y coordinates are going from bottom to up //
 
-        camera->lastMousePositionX = mousePositionFloatX;
-        camera->lastMousePositionY = mousePositionFloatY;
+        lastMousePositionX = mouseFloatX;
+        lastMousePositionY = mouseFloatY;
 
-        offsetX *= camera->sensitivity;
-        offsetY *= camera->sensitivity;
+        offsetX *= sensitivity;
+        offsetY *= sensitivity;
 
-        camera->yaw += offsetX;
-        camera->pitch += offsetY;
+        yaw += offsetX;
+        pitch += offsetY;
 
-        if (camera->pitch > 89) camera->pitch = 89;
-        if (camera->pitch < -89) camera->pitch = -89;
+        if (pitch > 89) pitch = 89;
+        if (pitch < -89) pitch = -89;
 
-        glm::vec3 direction = glm::vec3(cos(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch)), sin(glm::radians(camera->pitch)),
-            sin(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch)));
-        camera->cameraFront = glm::normalize(direction);
+        glm::vec3 direction = glm::vec3(cos(glm::radians(yaw)) * cos(glm::radians(pitch)), sin(glm::radians(pitch)),
+            sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+        cameraFront = glm::normalize(direction);
     }
 
     //minor // Zooming in and out //
