@@ -1,6 +1,6 @@
 #include <print>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -37,11 +37,10 @@ GLFWwindow *init() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
-    //info // GLEW (instead of GLAD) //
+    //info // GLAD //
 
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        std::println("Failed to initialize GLEW");
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::println("Failed to initialize GLAD");
         return nullptr;
     }
 

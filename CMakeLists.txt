@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 4.2)
-project(OpenGL CXX)
+project(OpenGL CXX C)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -7,7 +7,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
-find_package(GLEW REQUIRED)
+
+#info # GLAD  #
+
+add_library(glad STATIC vendor/glad/src/glad.c)
+target_include_directories(glad PUBLIC vendor/glad/include)
 
 #info # Fetch content #
 
@@ -62,8 +66,6 @@ add_executable(${PROJECT_NAME} source/main.cpp
 
 #info # Libraries #
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
-
 add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_draw.cpp
@@ -73,17 +75,20 @@ add_library(imgui STATIC
     ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
-target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLEW)
+
+target_compile_definitions(imgui PUBLIC IMGUI_IMPL_OPENGL_LOADER_GLAD)
 target_include_directories(imgui PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
 )
-target_link_libraries(imgui PUBLIC glfw OpenGL::GL GLEW::GLEW)
+target_link_libraries(imgui PUBLIC glfw OpenGL::GL glad)
+
+target_include_directories(${PROJECT_NAME} PRIVATE ${stb_SOURCE_DIR})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
     OpenGL::GL
     glfw
-    GLEW::GLEW
+    glad
     glm::glm
     imgui
 )

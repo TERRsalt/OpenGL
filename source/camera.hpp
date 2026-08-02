@@ -80,13 +80,13 @@ public:
         glm::vec3 moveDirection(0, 0, 0);
 
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) moveDirection -= movingToTheRight;
-        else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveDirection += movingToTheRight;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) moveDirection += movingToTheRight;
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) moveDirection += movingForward;
-        else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveDirection -= movingForward;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) moveDirection -= movingForward;
 
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) moveDirection.y += 1;
-        else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moveDirection.y -= 1;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moveDirection.y -= 1;
 
         if (glm::length(moveDirection) > 0) cameraPosition += glm::normalize(moveDirection) * characterSpeedDeltaTime;
     }

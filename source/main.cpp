@@ -1,7 +1,7 @@
 #include <print>
 #include <cmath>
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <stb_image.h>
@@ -36,7 +36,7 @@ int main() {
 
     //info // Textures //
 
-    backgroundColor = SKY_BLUE;
+    backgroundColor = colors::SKY_BLUE;
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -115,7 +115,7 @@ int main() {
             }
         }
 
-        //minor // ImGui frame //
+        //minor // ImGui //
 
         if (debugMenu) debugUi::debug();
 
