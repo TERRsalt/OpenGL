@@ -45,10 +45,11 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
 
     //exp // Lighting attributes //
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    constexpr auto LIGHT_POSITION = glm::vec3(2, 2, -2);
+    constexpr auto LIGHT_POSITION = glm::vec3(20, 25, -30);
+    constexpr auto LIGHT_COLOR = glm::vec3(1, 1, 0.9);
 
     //info // Textures //
 
@@ -93,6 +94,9 @@ int main() {
 
         shader.use();
 
+        shader.setUniform("uLightPosition", LIGHT_POSITION);
+        shader.setUniform("uLightColor", LIGHT_COLOR);
+
         glm::mat4 view = glm::lookAt(camera.cameraPosition, camera.cameraPosition + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
 
@@ -102,7 +106,7 @@ int main() {
 
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
 
-        mesh.updateVertices(blocks["colorGreen"]);
+        mesh.updateVertices(blocks["grass"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
             for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                 glm::mat4 model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
@@ -111,7 +115,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["colorBrown"]);
+        mesh.updateVertices(blocks["dirt"]);
         for (int y = -1; y >= -2; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -122,7 +126,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["colorGrey"]);
+        mesh.updateVertices(blocks["stone"]);
         for (int y = -3; y >= -9; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -136,11 +140,12 @@ int main() {
         //minor // Drawing the light source //
 
         lightingShader.use();
+
         lightingShader.setUniform("uView", view);
         lightingShader.setUniform("uProjection", camera.projection);
 
         glm::mat4 model = glm::translate(UNIT_MATRIX, LIGHT_POSITION);
-        //model = glm::scale(model, glm::vec3(0.2));
+        model = glm::scale(model, glm::vec3(5));
         lightingShader.setUniform("uModel", model);
 
         glBindVertexArray(lightVao);

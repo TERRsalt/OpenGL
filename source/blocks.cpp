@@ -7,112 +7,136 @@
 #include "colors.hpp"
 
 std::vector<float> colorBlockGenerator(glm::vec3 colorOfTheBlock) {
-        return {
+    return {
         //minor // Front face //
 
         -0.5, -0.5, 0.5,
+        0, 0, 1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, -0.5, 0.5,
+        0, 0, 1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, 0.5,
+        0, 0, 1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, 0.5, 0.5,
+        0, 0, 1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         //minor // Back face //
 
         0.5, -0.5, -0.5,
+        0, 0, -1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, -0.5, -0.5,
+        0, 0, -1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, 0.5, -0.5,
+        0, 0, -1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, -0.5,
+        0, 0, -1,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         //minor // Left face //
 
         -0.5, -0.5, -0.5,
+        -1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, -0.5, 0.5,
+        -1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, 0.5, 0.5,
+        -1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, 0.5, -0.5,
+        -1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         //minor // Right face //
 
         0.5, -0.5, 0.5,
+        1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, -0.5, -0.5,
+        1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, -0.5,
+        1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, 0.5,
+        1, 0, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         //minor // Top face //
 
         -0.5, 0.5, 0.5,
+        0, 1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, 0.5,
+        0, 1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, 0.5, -0.5,
+        0, 1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, 0.5, -0.5,
+        0, 1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         //minor // Bottom face //
 
         -0.5, -0.5, -0.5,
+        0, -1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, -0.5, -0.5,
+        0, -1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         0.5, -0.5, 0.5,
+        0, -1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         0, 0,
 
         -0.5, -0.5, 0.5,
+        0, -1, 0,
         colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
         1, 1
     };
@@ -144,54 +168,66 @@ std::vector<float> blockGenerator(glm::ivec2 frontTextureCoordinates, glm::ivec2
         //minor // Front face //
 
         -0.5, -0.5, 0.5,
+        0, 0, 1,
         1, 0, 0,
         frontTexture[0], frontTexture[2],
 
         0.5, -0.5, 0.5,
+        0, 0, 1,
         0, 1, 0,
         frontTexture[1], frontTexture[2],
 
         0.5, 0.5, 0.5,
         0, 0, 1,
+        0, 0, 1,
         frontTexture[1], frontTexture[3],
 
         -0.5, 0.5, 0.5,
+        0, 0, 1,
         1, 1, 0,
         frontTexture[0], frontTexture[3],
 
         //minor // Back face //
 
         0.5, -0.5, -0.5,
+        0, 0, -1,
         1, 0, 0,
         backTexture[0], backTexture[2],
 
         -0.5, -0.5, -0.5,
+        0, 0, -1,
         0, 1, 0,
         backTexture[1], backTexture[2],
 
         -0.5, 0.5, -0.5,
+        0, 0, -1,
         0, 0, 1,
         backTexture[1], backTexture[3],
 
         0.5, 0.5, -0.5,
+        0, 0, -1,
         1, 1, 0,
         backTexture[0], backTexture[3],
 
         //minor // Left face //
 
         -0.5, -0.5, -0.5,
+        -1, 0, 0,
         1, 0, 0,
         leftTexture[0], leftTexture[2],
 
         -0.5, -0.5, 0.5,
+        -1, 0, 0,
         0, 1, 0,
         leftTexture[1], leftTexture[2],
 
         -0.5, 0.5, 0.5,
+        -1, 0, 0,
         0, 0, 1,
         leftTexture[1], leftTexture[3],
 
         -0.5, 0.5, -0.5,
+        -1, 0, 0,
         1, 1, 0,
         leftTexture[0], leftTexture[3],
 
@@ -199,53 +235,65 @@ std::vector<float> blockGenerator(glm::ivec2 frontTextureCoordinates, glm::ivec2
 
         0.5, -0.5, 0.5,
         1, 0, 0,
+        1, 0, 0,
         rightTexture[0], rightTexture[2],
 
         0.5, -0.5, -0.5,
+        1, 0, 0,
         0, 1, 0,
         rightTexture[1], rightTexture[2],
 
         0.5, 0.5, -0.5,
+        1, 0, 0,
         0, 0, 1,
         rightTexture[1], rightTexture[3],
 
         0.5, 0.5, 0.5,
+        1, 0, 0,
         1, 1, 0,
         rightTexture[0], rightTexture[3],
 
         //minor // Top face //
 
         -0.5, 0.5, 0.5,
+        0, 1, 0,
         1, 0, 0,
         topTexture[0], topTexture[2],
 
         0.5, 0.5, 0.5,
         0, 1, 0,
+        0, 1, 0,
         topTexture[1], topTexture[2],
 
         0.5, 0.5, -0.5,
+        0, 1, 0,
         0, 0, 1,
         topTexture[1], topTexture[3],
 
         -0.5, 0.5, -0.5,
+        0, 1, 0,
         1, 1, 0,
         topTexture[0], topTexture[3],
 
         //minor // Bottom face //
 
         -0.5, -0.5, -0.5,
+        0, -1, 0,
         1, 0, 0,
         bottomTexture[0], bottomTexture[2],
 
         0.5, -0.5, -0.5,
+        0, -1, 0,
         0, 1, 0,
         bottomTexture[1], bottomTexture[2],
 
         0.5, -0.5, 0.5,
+        0, -1, 0,
         0, 0, 1,
         bottomTexture[1], bottomTexture[3],
 
         -0.5, -0.5, 0.5,
+        0, -1, 0,
         1, 1, 0,
         bottomTexture[0], bottomTexture[3]
     };
