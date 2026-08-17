@@ -33,13 +33,13 @@ GLFWwindow *init() {
         glfwTerminate();
         return nullptr;
     }
-
     glfwMakeContextCurrent(window);
+
     glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     //info // GLAD //
 
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
         std::println("Failed to initialize GLAD");
         return nullptr;
     }

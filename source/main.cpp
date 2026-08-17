@@ -34,6 +34,22 @@ int main() {
 
     Mesh mesh(indices);
 
+    //info // Lighting //
+
+    Shader lightingShader("../shaders/vertex.vert", "../shaders/lightning.frag");
+
+    unsigned int lightVao;
+    glGenVertexArrays(1, &lightVao);
+
+    glBindVertexArray(lightVao);
+    glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+
+    //exp // Lighting attributes //
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
+    glEnableVertexAttribArray(0);
+
+    constexpr auto LIGHT_POSITION = glm::vec3(2, 2, -2);
+
     //info // Textures //
 
     backgroundColor = colors::SKY_BLUE;
@@ -50,6 +66,8 @@ int main() {
     glfwSetWindowUserPointer(window, &camera);
 
     //info // Running the window //
+
+    constexpr auto UNIT_MATRIX = glm::mat4(1);
 
     while (!glfwWindowShouldClose(window)) {
         //minor // Delta time //
@@ -73,7 +91,7 @@ int main() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
-        constexpr auto UNIT_MATRIX = glm::mat4(1);
+        shader.use();
 
         glm::mat4 view = glm::lookAt(camera.cameraPosition, camera.cameraPosition + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
@@ -84,7 +102,7 @@ int main() {
 
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
 
-        mesh.updateVertices(blocks["grass"]);
+        mesh.updateVertices(blocks["colorGreen"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
             for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                 glm::mat4 model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
@@ -93,7 +111,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["dirt"]);
+        mesh.updateVertices(blocks["colorBrown"]);
         for (int y = -1; y >= -2; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -104,7 +122,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["stone"]);
+        mesh.updateVertices(blocks["colorGrey"]);
         for (int y = -3; y >= -9; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -114,6 +132,20 @@ int main() {
                 }
             }
         }
+
+        //minor // Drawing the light source //
+
+        lightingShader.use();
+        lightingShader.setUniform("uView", view);
+        lightingShader.setUniform("uProjection", camera.projection);
+
+        glm::mat4 model = glm::translate(UNIT_MATRIX, LIGHT_POSITION);
+        //model = glm::scale(model, glm::vec3(0.2));
+        lightingShader.setUniform("uModel", model);
+
+        glBindVertexArray(lightVao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
+        glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 
         //minor // ImGui //
 

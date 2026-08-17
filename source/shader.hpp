@@ -17,33 +17,33 @@ public:
         //minor // Vertex shader //
 
         const std::string vertexShaderSource = fileRead(vertexPath);
-        const char *vertexShaderSourceCChar = vertexShaderSource.c_str();
+        const char *vertexShaderSourceCString = vertexShaderSource.c_str();
 
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-        glShaderSource(vertexShader, 1, &vertexShaderSourceCChar, nullptr);
+        glShaderSource(vertexShader, 1, &vertexShaderSourceCString, nullptr);
         glCompileShader(vertexShader);
 
         glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(vertexShader, 512, nullptr, infoLog);
-            std::println("Error! Vertex shader compilation error\n{}", infoLog);
+            std::println("Vertex shader compilation error\n{}", infoLog);
         }
 
         //minor // Fragment shader //
 
         const std::string fragmentShaderSource = fileRead(fragmentPath);
-        const char *fragmentShaderSourceCChar = fragmentShaderSource.c_str();
+        const char *fragmentShaderSourceCString = fragmentShaderSource.c_str();
 
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-        glShaderSource(fragmentShader, 1, &fragmentShaderSourceCChar, nullptr);
+        glShaderSource(fragmentShader, 1, &fragmentShaderSourceCString, nullptr);
         glCompileShader(fragmentShader);
 
         glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
         if (!success) {
             glGetShaderInfoLog(fragmentShader, 512, nullptr, infoLog);
-            std::println("Error! Fragment shader compilation error\n{}", infoLog);
+            std::println("Fragment shader compilation error\n{}", infoLog);
         }
 
         //minor // Shader program //

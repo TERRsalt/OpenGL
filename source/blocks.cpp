@@ -4,6 +4,120 @@
 
 #include <glm/glm.hpp>
 
+#include "colors.hpp"
+
+std::vector<float> colorBlockGenerator(glm::vec3 colorOfTheBlock) {
+        return {
+        //minor // Front face //
+
+        -0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        //minor // Back face //
+
+        0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        //minor // Left face //
+
+        -0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        //minor // Right face //
+
+        0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        //minor // Top face //
+
+        -0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, 0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        //minor // Bottom face //
+
+        -0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, -0.5, -0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        0, 0,
+
+        -0.5, -0.5, 0.5,
+        colorOfTheBlock.r, colorOfTheBlock.g, colorOfTheBlock.b,
+        1, 1
+    };
+}
+
 //info // Generating block from texture atlas //
 
 glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
@@ -21,10 +135,10 @@ glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
 }
 
 std::vector<float> blockGenerator(glm::ivec2 frontTextureCoordinates, glm::ivec2 backTextureCoordinates,
-    glm::ivec2 leftTextureCoordinates, glm::ivec2 rightTextureCoordinates, glm::ivec2 topTextureCoordinates, glm::ivec2 bottomTextureCoordinates) {
+        glm::ivec2 leftTextureCoordinates, glm::ivec2 rightTextureCoordinates, glm::ivec2 topTextureCoordinates, glm::ivec2 bottomTextureCoordinates) {
     glm::vec4 frontTexture = getTextureFromAtlas(frontTextureCoordinates), backTexture = getTextureFromAtlas(backTextureCoordinates);
     glm::vec4 leftTexture = getTextureFromAtlas(leftTextureCoordinates), rightTexture = getTextureFromAtlas(rightTextureCoordinates);
-    glm::vec4 topTexture = getTextureFromAtlas(topTextureCoordinates), bottomTexture = getTextureFromAtlas(bottomTextureCoordinates);;
+    glm::vec4 topTexture = getTextureFromAtlas(topTextureCoordinates), bottomTexture = getTextureFromAtlas(bottomTextureCoordinates);
 
     return {
         //minor // Front face //
@@ -168,6 +282,10 @@ std::vector<unsigned int> indices = {
 //info // Blocks //
 
 std::map<std::string, std::vector<float>> blocks = {
+    {"colorGrey", colorBlockGenerator(colors::GREY)},
+    {"colorBrown", colorBlockGenerator(colors::BROWN)},
+    {"colorGreen", colorBlockGenerator(colors::GREEN)},
+
     {"stone", blockGenerator({1, 0}, {1, 0},
         {1, 0}, {1, 0}, {1, 0}, {1, 0})},
 

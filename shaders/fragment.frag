@@ -5,6 +5,9 @@ out vec4 FragmentColor;
 in vec3 CustomColor;
 in vec2 TextureCoordinates;
 
-uniform sampler2D uTexture;
+uniform sampler2D uTexture;;
 
-void main() {FragmentColor = texture(uTexture, TextureCoordinates);}
+void main() {
+    //FragmentColor = texture(uTexture, TextureCoordinates);
+    FragmentColor = vec4(CustomColor, 1);
+}
