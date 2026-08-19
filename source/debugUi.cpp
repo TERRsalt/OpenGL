@@ -31,7 +31,7 @@ namespace debugUi {
 
         ImGui::Text("FPS: %.1f", 1.0f / gameTime.deltaTime);
 
-        ImGui::Text("Camera position: %.2f, %.2f, %.2f", camera.cameraPosition.x, camera.cameraPosition.y, camera.cameraPosition.z);
+        ImGui::Text("Camera position: %.2f, %.2f, %.2f", camera.position.x, camera.position.y, camera.position.z);
         ImGui::Text("Camera front: %.2f, %.2f, %.2f", camera.cameraFront.x, camera.cameraFront.y, camera.cameraFront.z);
 
         ImGui::End();

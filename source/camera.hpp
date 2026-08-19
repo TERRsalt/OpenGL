@@ -13,7 +13,7 @@ static constexpr float FOV = 75;
 
 class Camera {
 public:
-    glm::vec3 cameraPosition = glm::vec3(0, 2, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
+    glm::vec3 position = glm::vec3(0, 2, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
     float fov, renderDistance = 100;
     glm::mat4 projection;
 
@@ -88,7 +88,7 @@ public:
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) moveDirection.y += 1;
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) moveDirection.y -= 1;
 
-        if (glm::length(moveDirection) > 0) cameraPosition += glm::normalize(moveDirection) * characterSpeedDeltaTime;
+        if (glm::length(moveDirection) > 0) position += glm::normalize(moveDirection) * characterSpeedDeltaTime;
     }
 
 private:
