@@ -48,9 +48,6 @@ int main() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
-    constexpr auto LIGHT_POSITION = glm::vec3(20, 25, -30);
-    constexpr auto LIGHT_COLOR = glm::vec3(1, 1, 0.9);
-
     //info // Textures //
 
     backgroundColor = colors::SKY_BLUE;
@@ -92,11 +89,28 @@ int main() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
+        auto lightPosition = glm::vec3(10);
+
         shader.use();
 
-        shader.setUniform("uLightPosition", LIGHT_POSITION);
-        shader.setUniform("uLightColor", LIGHT_COLOR);
         shader.setUniform("uViewPosition", camera.position);
+
+        glm::vec3 lightColor;
+        lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0f));
+        lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7f));
+        lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3f));
+        glm::vec3 diffuseColor = lightColor * glm::vec3(1.0f);
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(1.0f);
+
+        shader.setUniform("uLight.position", lightPosition);
+        shader.setUniform("uLight.ambient", ambientColor);
+        shader.setUniform("uLight.diffuse", diffuseColor);
+        shader.setUniform("uLight.specular", glm::vec3(1.0f));
+
+        shader.setUniform("uMaterial.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+        shader.setUniform("uMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+        shader.setUniform("uMaterial.specular", glm::vec3(1.0f));
+        shader.setUniform("uMaterial.shininess", 8.0f);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
@@ -146,8 +160,10 @@ int main() {
         lightingShader.setUniform("uView", view);
         lightingShader.setUniform("uProjection", camera.projection);
 
-        model = glm::translate(UNIT_MATRIX, LIGHT_POSITION);
-        model = glm::scale(model, glm::vec3(5));
+        lightingShader.setUniform("uColor", lightColor);
+
+        model = glm::translate(UNIT_MATRIX, lightPosition);
+        //model = glm::scale(model, glm::vec3(5));
         lightingShader.setUniform("uModel", model);
 
         glBindVertexArray(lightVao);

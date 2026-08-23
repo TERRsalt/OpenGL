@@ -17,7 +17,7 @@ uniform mat4 uProjection;
 void main() {
     gl_Position = uProjection * uView * uModel * vec4(aPosition, 1);
     FragmentPosition = vec3(uModel * vec4(aPosition, 1));
-    Normal = aNormal;
+    Normal = mat3(transpose(inverse(uModel))) * aNormal;
 
     CustomColor = aColor;
     TextureCoordinates = aTextureCoordinates;

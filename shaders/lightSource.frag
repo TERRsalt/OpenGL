@@ -2,4 +2,6 @@
 
 out vec4 FragmentColor;
 
-void main() {FragmentColor = vec4(1);}
+uniform vec3 uColor;
+
+void main() {FragmentColor = vec4(uColor, 1);}
