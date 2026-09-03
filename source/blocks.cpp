@@ -145,16 +145,16 @@ std::vector<float> colorBlockGenerator(glm::vec3 colorOfTheBlock) {
 //info // Generating block from texture atlas //
 
 glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
-    constexpr unsigned int ATLAS_SIZE = 16;
+    constexpr unsigned int ATLAS_SIZE = 1; //minor // Change this value, depending on the texture/atlas //
 
-    float flippedY = ATLAS_SIZE - 1 - textureCoordinates.y;
+    const float FLIPPED_Y = ATLAS_SIZE - 1 - textureCoordinates.y;
     constexpr float BLEED_MARGIN = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
 
     return {
         (textureCoordinates.x + BLEED_MARGIN) / ATLAS_SIZE,
         (textureCoordinates.x + 1 - BLEED_MARGIN) / ATLAS_SIZE,
-        (flippedY + BLEED_MARGIN) / ATLAS_SIZE,
-        (flippedY + 1 - BLEED_MARGIN) / ATLAS_SIZE
+        (FLIPPED_Y + BLEED_MARGIN) / ATLAS_SIZE,
+        (FLIPPED_Y + 1 - BLEED_MARGIN) / ATLAS_SIZE
     };
 }
 
@@ -330,19 +330,24 @@ std::vector<unsigned int> indices = {
 //info // Blocks //
 
 std::map<std::string, std::vector<float>> blocks = {
+    //minor // One color blocks //
     {"colorGrey", colorBlockGenerator(colors::GREY)},
     {"colorBrown", colorBlockGenerator(colors::BROWN)},
     {"colorGreen", colorBlockGenerator(colors::GREEN)},
 
+    //minor // Atlas blocks //
+
     {"stone", blockGenerator({1, 0}, {1, 0},
-        {1, 0}, {1, 0}, {1, 0}, {1, 0})},
-
+            {1, 0}, {1, 0}, {1, 0}, {1, 0})},
     {"dirt", blockGenerator({2, 0}, {2, 0},
-        {2, 0}, {2, 0}, {2, 0}, {2, 0})},
-
+            {2, 0}, {2, 0}, {2, 0}, {2, 0})},
     {"grass", blockGenerator({3, 0}, {3, 0},
-        {3, 0}, {3, 0}, {8, 2}, {2, 0})},
-
+            {3, 0}, {3, 0}, {8, 2}, {2, 0})},
     {"wood", blockGenerator({4, 1}, {4, 1},
-        {4, 1}, {4, 1}, {5, 1}, {5, 1})}
+            {4, 1}, {4, 1}, {5, 1}, {5, 1})},
+
+    //minor // Other blocks //
+
+    {"container", blockGenerator({0, 0}, {0, 0},
+            {0, 0}, {0, 0}, {0, 0}, {0, 0})}
 };

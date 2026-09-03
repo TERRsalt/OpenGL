@@ -54,10 +54,17 @@ int main() {
 
     stbi_set_flip_vertically_on_load(true);
 
-    Texture texture("assets/atlas.png", GL_NEAREST);
-    shader.setUniform("uTexture", 0);
+    // Texture texture("assets/atlas.png", GL_NEAREST);
+    // shader.setUniform("uTexture", 0);
+    // texture.bind(0);
 
-    texture.bind(0);
+    Texture container("assets/container.png", GL_LINEAR);
+    container.bind(0);
+    shader.setUniform("uMaterial.diffuse", 0);
+
+    Texture containerSpecular("assets/containerSpecular.png", GL_LINEAR);
+    containerSpecular.bind(1);
+    shader.setUniform("uMaterial.specular", 1);
 
     //info // Camera //
 
@@ -95,10 +102,7 @@ int main() {
 
         shader.setUniform("uViewPosition", camera.position);
 
-        glm::vec3 lightColor;
-        lightColor.x = static_cast<float>(sin(glfwGetTime() * 2.0f));
-        lightColor.y = static_cast<float>(sin(glfwGetTime() * 0.7f));
-        lightColor.z = static_cast<float>(sin(glfwGetTime() * 1.3f));
+        auto lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
         glm::vec3 diffuseColor = lightColor * glm::vec3(1.0f);
         glm::vec3 ambientColor = diffuseColor * glm::vec3(1.0f);
 
@@ -107,10 +111,12 @@ int main() {
         shader.setUniform("uLight.diffuse", diffuseColor);
         shader.setUniform("uLight.specular", glm::vec3(1.0f));
 
-        shader.setUniform("uMaterial.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
-        shader.setUniform("uMaterial.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
-        shader.setUniform("uMaterial.specular", glm::vec3(1.0f));
         shader.setUniform("uMaterial.shininess", 8.0f);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, container.textureId);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, containerSpecular.textureId);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
@@ -122,7 +128,7 @@ int main() {
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
         glm::mat4 model;
 
-        mesh.updateVertices(blocks["grass"]);
+        mesh.updateVertices(blocks["container"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
             for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                 model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
@@ -131,7 +137,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["dirt"]);
+        mesh.updateVertices(blocks["container"]);
         for (int y = -1; y >= -2; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -142,7 +148,7 @@ int main() {
             }
         }
 
-        mesh.updateVertices(blocks["stone"]);
+        mesh.updateVertices(blocks["container"]);
         for (int y = -3; y >= -9; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
@@ -184,7 +190,8 @@ int main() {
 
     shader.remove();
     mesh.remove();
-    texture.remove();
+    //texture.remove();
+    container.remove();
     debugUi::remove();
 
     //info // Closing the window //
