@@ -21,6 +21,7 @@
 #include "mesh.hpp"
 #include "time.hpp"
 #include "debugUi.hpp"
+#include "random.hpp"
 
 int main() {
     GLFWwindow *window = init();
@@ -74,6 +75,10 @@ int main() {
 
     glfwSetWindowUserPointer(window, &camera);
 
+    //info // Floating cubes //
+
+    std::vector<glm::vec3> floatingCubes = generateFloatingCubes();
+
     //info // Running the window //
 
     constexpr auto UNIT_MATRIX = glm::mat4(1);
@@ -100,13 +105,13 @@ int main() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
-        auto lightPosition = glm::vec3(5.0f, 10.0f, -20.0f);
+        auto lightPosition = glm::vec3(5.0f, 25.0f, -20.0f);
 
         shader.use();
 
         shader.setUniform("uViewPosition", camera.position);
 
-        shader.setUniform("uLight.position", lightPosition);
+        shader.setUniform("uLight.direction", -lightPosition);
         shader.setUniform("uLight.ambient", glm::vec3(0.2f));
         shader.setUniform("uLight.diffuse", glm::vec3(2.0f));
         shader.setUniform("uLight.specular", glm::vec3(-0.25f, -0.25f, 1.0f));
@@ -159,6 +164,18 @@ int main() {
                     mesh.draw();
                 }
             }
+        }
+
+        //minor // Drawing the floating cubes //
+
+        auto degrees = static_cast<float>(glfwGetTime() * 30);
+        float additionalDegrees = 0;
+        for (glm::vec3 floatingCube: floatingCubes) {
+            model = glm::translate(UNIT_MATRIX, floatingCube);
+            model = glm::rotate(model, glm::radians(degrees + additionalDegrees), glm::vec3(1.0f, 0.3f, 0.5f));
+            additionalDegrees += 30;
+            shader.setUniform("uModel", model);
+            mesh.draw();
         }
 
         //minor // Drawing the light source //

@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "colors.hpp"
+#include "random.hpp"
 
 std::vector<float> colorBlockGenerator(glm::vec3 colorOfTheBlock) {
     return {
@@ -351,3 +352,16 @@ std::map<std::string, std::vector<float>> blocks = {
     {"container", blockGenerator({0, 0}, {0, 0},
             {0, 0}, {0, 0}, {0, 0}, {0, 0})}
 };
+
+//info // Vector containing floating cubes //
+
+std::vector<glm::vec3> generateFloatingCubes() {
+    std::vector<glm::vec3> floatingCubes;
+
+    for (int numberOfCubes = 0; numberOfCubes < 10; numberOfCubes++) {
+        floatingCubes.emplace_back(static_cast<float>(randomInt(5) - 2.5), static_cast<float>(randomInt(5) + 5),
+                static_cast<float>(randomInt(5) - 2.5));
+    }
+
+    return floatingCubes;
+}

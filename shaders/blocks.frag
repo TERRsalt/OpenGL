@@ -20,7 +20,7 @@ struct Material {
 uniform Material uMaterial;
 
 struct Light {
-    vec3 position;
+    vec3 direction;
 
     vec3 ambient;
     vec3 diffuse;
@@ -29,10 +29,11 @@ struct Light {
 uniform Light uLight;
 
 void main() {
+    vec3 normal = normalize(Normal);
+    vec3 lightDirection = normalize(-uLight.direction);
+
     vec3 ambient = uLight.ambient * vec3(texture(uMaterial.diffuse, TextureCoordinates));
 
-    vec3 normal = normalize(Normal);
-    vec3 lightDirection = normalize(uLight.position - FragmentPosition);
     float floatDiffuse = max(dot(normal, lightDirection), 0.0);
     vec3 diffuse = uLight.diffuse * floatDiffuse * vec3(texture(uMaterial.diffuse, TextureCoordinates));
 
@@ -46,7 +47,7 @@ void main() {
     float specularValue = specularMask.r;
     vec3 emission = vec3(texture(uMaterial.emission, TextureCoordinates)) * (vec3(1.0) - step(0.05, specularValue));
 
-    vec3 phong = ambient + diffuse + specular + emission;
+    vec3 phong = ambient + diffuse + specular; // + emission;
 
     FragmentColor = vec4(phong, 1.0);
 }
