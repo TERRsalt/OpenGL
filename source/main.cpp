@@ -66,6 +66,10 @@ int main() {
     containerSpecular.bind(1);
     shader.setUniform("uMaterial.specular", 1);
 
+    Texture matrixEmission("assets/matrix.jpg", GL_LINEAR);
+    matrixEmission.bind(2);
+    shader.setUniform("uMaterial.emission", 2);
+
     //info // Camera //
 
     glfwSetWindowUserPointer(window, &camera);
@@ -96,27 +100,25 @@ int main() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
-        auto lightPosition = glm::vec3(10);
+        auto lightPosition = glm::vec3(5.0f, 10.0f, -20.0f);
 
         shader.use();
 
         shader.setUniform("uViewPosition", camera.position);
 
-        auto lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 diffuseColor = lightColor * glm::vec3(1.0f);
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(1.0f);
-
         shader.setUniform("uLight.position", lightPosition);
-        shader.setUniform("uLight.ambient", ambientColor);
-        shader.setUniform("uLight.diffuse", diffuseColor);
-        shader.setUniform("uLight.specular", glm::vec3(1.0f));
+        shader.setUniform("uLight.ambient", glm::vec3(0.2f));
+        shader.setUniform("uLight.diffuse", glm::vec3(2.0f));
+        shader.setUniform("uLight.specular", glm::vec3(-0.25f, -0.25f, 1.0f));
 
-        shader.setUniform("uMaterial.shininess", 8.0f);
+        shader.setUniform("uMaterial.shininess", 64.0f);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, container.textureId);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, containerSpecular.textureId);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, matrixEmission.textureId);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.cameraFront, camera.cameraUp);
         shader.setUniform("uView", view);
@@ -166,10 +168,10 @@ int main() {
         lightingShader.setUniform("uView", view);
         lightingShader.setUniform("uProjection", camera.projection);
 
-        lightingShader.setUniform("uColor", lightColor);
+        lightingShader.setUniform("uColor", glm::vec3(1.0f));
 
         model = glm::translate(UNIT_MATRIX, lightPosition);
-        //model = glm::scale(model, glm::vec3(5));
+        // model = glm::scale(model, glm::vec3(5));
         lightingShader.setUniform("uModel", model);
 
         glBindVertexArray(lightVao);
@@ -190,8 +192,10 @@ int main() {
 
     shader.remove();
     mesh.remove();
-    //texture.remove();
+    // texture.remove();
     container.remove();
+    containerSpecular.remove();
+    matrixEmission.remove();
     debugUi::remove();
 
     //info // Closing the window //

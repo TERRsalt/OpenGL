@@ -13,6 +13,8 @@ uniform sampler2D uTexture;
 struct Material {
     sampler2D diffuse;
     sampler2D specular;
+    sampler2D emission;
+
     float shininess;
 };
 uniform Material uMaterial;
@@ -31,16 +33,20 @@ void main() {
 
     vec3 normal = normalize(Normal);
     vec3 lightDirection = normalize(uLight.position - FragmentPosition);
-    float floatDiffuse = max(dot(normal, lightDirection), 0);
+    float floatDiffuse = max(dot(normal, lightDirection), 0.0);
     vec3 diffuse = uLight.diffuse * floatDiffuse * vec3(texture(uMaterial.diffuse, TextureCoordinates));
 
     float specularStrength = 0.5;
     vec3 viewDirection = normalize(uViewPosition - FragmentPosition);
     vec3 reflectDirection = reflect(-lightDirection, normal);
-    float floatSpecular = pow(max(dot(viewDirection, reflectDirection), 0), uMaterial.shininess);
-    vec3 specular = uLight.specular * floatSpecular * vec3(texture(uMaterial.specular, TextureCoordinates));
+    float floatSpecular = pow(max(dot(viewDirection, reflectDirection), 0.0), uMaterial.shininess);
+    vec3 specularMask = vec3(texture(uMaterial.specular, TextureCoordinates));
+    vec3 specular = uLight.specular * floatSpecular * specularMask;
 
-    vec3 phong = ambient + diffuse + specular;
+    float specularValue = specularMask.r;
+    vec3 emission = vec3(texture(uMaterial.emission, TextureCoordinates)) * (vec3(1.0) - step(0.05, specularValue));
 
-    FragmentColor = vec4(texture(uTexture, TextureCoordinates).rgb * phong, 1);
+    vec3 phong = ambient + diffuse + specular + emission;
+
+    FragmentColor = vec4(phong, 1.0);
 }
