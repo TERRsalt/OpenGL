@@ -20,17 +20,22 @@ struct Material {
 uniform Material uMaterial;
 
 struct Light {
-    vec3 direction;
+    vec3 position;
 
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 uniform Light uLight;
 
 void main() {
     vec3 normal = normalize(Normal);
-    vec3 lightDirection = normalize(-uLight.direction);
+
+    vec3 lightDirection = normalize(uLight.position - FragmentPosition);
 
     vec3 ambient = uLight.ambient * vec3(texture(uMaterial.diffuse, TextureCoordinates));
 
@@ -46,6 +51,12 @@ void main() {
 
     float specularValue = specularMask.r;
     vec3 emission = vec3(texture(uMaterial.emission, TextureCoordinates)) * (vec3(1.0) - step(0.05, specularValue));
+
+    float distance = length(uLight.position - FragmentPosition);
+    float attenuation = 1.0 / (uLight.constant + uLight.linear * distance + uLight.quadratic * distance * distance);
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
 
     vec3 phong = ambient + diffuse + specular; // + emission;
 

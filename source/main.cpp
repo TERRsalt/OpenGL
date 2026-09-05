@@ -28,7 +28,7 @@ int main() {
 
     //info // Shaders //
 
-    Shader shader("../shaders/vertex.vert", "../shaders/blocks.frag");
+    Shader shader("../shaders/vertex.vert", "../shaders/pointLight.frag");
     shader.use();
 
     //info // Vertex and buffer(s) data //
@@ -105,16 +105,19 @@ int main() {
 
         //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
 
-        auto lightPosition = glm::vec3(5.0f, 25.0f, -20.0f);
+        auto lightPosition = glm::vec3(1.0f, 1.0f, -2.0f);
 
         shader.use();
 
         shader.setUniform("uViewPosition", camera.position);
 
-        shader.setUniform("uLight.direction", -lightPosition);
+        shader.setUniform("uLight.position", lightPosition);
         shader.setUniform("uLight.ambient", glm::vec3(0.2f));
         shader.setUniform("uLight.diffuse", glm::vec3(2.0f));
         shader.setUniform("uLight.specular", glm::vec3(-0.25f, -0.25f, 1.0f));
+        shader.setUniform("uLight.constant", 1.0f);
+        shader.setUniform("uLight.linear", 0.09f);
+        shader.setUniform("uLight.quadratic", 0.032f);
 
         shader.setUniform("uMaterial.shininess", 64.0f);
 
