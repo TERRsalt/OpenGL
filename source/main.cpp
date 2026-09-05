@@ -21,14 +21,13 @@
 #include "mesh.hpp"
 #include "time.hpp"
 #include "debugUi.hpp"
-#include "random.hpp"
 
 int main() {
     GLFWwindow *window = init();
 
     //info // Shaders //
 
-    Shader shader("../shaders/vertex.vert", "../shaders/pointLight.frag");
+    Shader shader("../shaders/vertex.vert", "../shaders/spotlight.frag");
     shader.use();
 
     //info // Vertex and buffer(s) data //
@@ -111,15 +110,27 @@ int main() {
 
         shader.setUniform("uViewPosition", camera.position);
 
-        shader.setUniform("uLight.position", lightPosition);
+        //minor // Directional light //
+        // shader.setUniform("uLight.direction", -lightPosition);
+
+        //minor // Point light //
+        // shader.setUniform("uLight.position", lightPosition);
+        // shader.setUniform("uLight.constant", 1.0f);
+        // shader.setUniform("uLight.linear", 0.09f);
+        // shader.setUniform("uLight.quadratic", 0.032f);
+
+        //minor // Spotlight //
+        shader.setUniform("uLight.position", camera.position);
+        shader.setUniform("uLight.direction", camera.front);
+        shader.setUniform("uLight.cutOff", glm::cos(glm::radians(20.0f)));
+        shader.setUniform("uLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+
+        //minor // All types of lighting //
         shader.setUniform("uLight.ambient", glm::vec3(0.2f));
         shader.setUniform("uLight.diffuse", glm::vec3(2.0f));
-        shader.setUniform("uLight.specular", glm::vec3(-0.25f, -0.25f, 1.0f));
-        shader.setUniform("uLight.constant", 1.0f);
-        shader.setUniform("uLight.linear", 0.09f);
-        shader.setUniform("uLight.quadratic", 0.032f);
+        shader.setUniform("uLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        shader.setUniform("uMaterial.shininess", 64.0f);
+        shader.setUniform("uMaterial.shininess", 16.0f);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, container.textureId);
@@ -128,7 +139,7 @@ int main() {
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, matrixEmission.textureId);
 
-        glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.cameraFront, camera.cameraUp);
+        glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.cameraUp);
         shader.setUniform("uView", view);
 
         shader.setUniform("uProjection", camera.projection);

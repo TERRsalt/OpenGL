@@ -13,7 +13,7 @@ static constexpr float FOV = 75;
 
 class Camera {
 public:
-    glm::vec3 position = glm::vec3(0, 2, 0), cameraFront = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
+    glm::vec3 position = glm::vec3(0, 2, 0), front = glm::vec3(0, 0, -1), cameraUp = glm::vec3(0, 1, 0);
     float fov, renderDistance = 100;
     glm::mat4 projection;
 
@@ -57,7 +57,7 @@ public:
 
         glm::vec3 direction = glm::vec3(cos(glm::radians(yaw)) * cos(glm::radians(pitch)), sin(glm::radians(pitch)),
             sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-        cameraFront = glm::normalize(direction);
+        front = glm::normalize(direction);
     }
 
     //minor // Zooming in and out //
@@ -74,8 +74,8 @@ public:
     void characterMovement(GLFWwindow *window) {
         float characterSpeedDeltaTime = characterSpeed * gameTime.deltaTime;
 
-        glm::vec3 movingForward = glm::normalize(glm::vec3(cameraFront.x, 0, cameraFront.z));
-        glm::vec3 movingToTheRight = glm::normalize(glm::cross(cameraFront, cameraUp));
+        glm::vec3 movingForward = glm::normalize(glm::vec3(front.x, 0, front.z));
+        glm::vec3 movingToTheRight = glm::normalize(glm::cross(front, cameraUp));
 
         glm::vec3 moveDirection(0, 0, 0);
 
