@@ -92,9 +92,3 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glm::glm
     imgui
 )
-
-#info # Stuff for final compilation #
-
-#exp # Only for final compilation #
-#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/assets" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-#file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/shaders" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
