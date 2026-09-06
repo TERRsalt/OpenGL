@@ -27,7 +27,7 @@ int main() {
 
     //info // Shaders //
 
-    Shader shader("../shaders/vertex.vert", "../shaders/spotlight.frag");
+    Shader shader("../shaders/vertex.vert", "../shaders/blocks.frag");
     shader.use();
 
     //info // Vertex and buffer(s) data //
@@ -78,6 +78,15 @@ int main() {
 
     std::vector<glm::vec3> floatingCubes = generateFloatingCubes();
 
+    //info // Point lights positions //
+
+    const std::vector<glm::vec3> POINT_LIGHTS_POSITIONS = {
+        {1.0f, 1.0f, -1.0f},
+        {0.0f, -5.0f, -6.0f},
+        {5.0f, -10.0f, -5.0f},
+        {-10.0f, 10.0f, -10.0f},
+    };
+
     //info // Running the window //
 
     constexpr auto UNIT_MATRIX = glm::mat4(1);
@@ -102,33 +111,74 @@ int main() {
         glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //minor // Transforming the matrices and sending it to vertex.vert ^-^ //
-
-        auto lightPosition = glm::vec3(1.0f, 1.0f, -2.0f);
+        //minor // Using the shaders and updating the view position //
 
         shader.use();
 
         shader.setUniform("uViewPosition", camera.position);
 
         //minor // Directional light //
-        // shader.setUniform("uLight.direction", -lightPosition);
+
+        shader.setUniform("uDirectionalLight.direction", glm::vec3(-100.0f, -100.0f, -200.0f));
+
+        shader.setUniform("uDirectionalLight.ambient", glm::vec3(0.05f));
+        shader.setUniform("uDirectionalLight.diffuse", glm::vec3(2.0f));
+        shader.setUniform("uDirectionalLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
         //minor // Point light //
-        // shader.setUniform("uLight.position", lightPosition);
-        // shader.setUniform("uLight.constant", 1.0f);
-        // shader.setUniform("uLight.linear", 0.09f);
-        // shader.setUniform("uLight.quadratic", 0.032f);
 
-        //minor // Spotlight //
-        shader.setUniform("uLight.position", camera.position);
-        shader.setUniform("uLight.direction", camera.front);
-        shader.setUniform("uLight.cutOff", glm::cos(glm::radians(20.0f)));
-        shader.setUniform("uLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+        shader.setUniform("uPointLights[0].position", POINT_LIGHTS_POSITIONS[0]);
 
-        //minor // All types of lighting //
-        shader.setUniform("uLight.ambient", glm::vec3(0.2f));
-        shader.setUniform("uLight.diffuse", glm::vec3(2.0f));
-        shader.setUniform("uLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setUniform("uPointLights[0].ambient", glm::vec3(0.05f));
+        shader.setUniform("uPointLights[0].diffuse", glm::vec3(2.0f));
+        shader.setUniform("uPointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        shader.setUniform("uPointLights[0].constant", 1.0f);
+        shader.setUniform("uPointLights[0].linear", 0.09f);
+        shader.setUniform("uPointLights[0].quadratic", 0.032f);
+
+        shader.setUniform("uPointLights[1].position", POINT_LIGHTS_POSITIONS[1]);
+
+        shader.setUniform("uPointLights[1].ambient", glm::vec3(0.05f));
+        shader.setUniform("uPointLights[1].diffuse", glm::vec3(2.0f));
+        shader.setUniform("uPointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        shader.setUniform("uPointLights[1].constant", 1.0f);
+        shader.setUniform("uPointLights[1].linear", 0.09f);
+        shader.setUniform("uPointLights[1].quadratic", 0.032f);
+
+        shader.setUniform("uPointLights[2].position", POINT_LIGHTS_POSITIONS[2]);
+
+        shader.setUniform("uPointLights[2].ambient", glm::vec3(0.05f));
+        shader.setUniform("uPointLights[2].diffuse", glm::vec3(2.0f));
+        shader.setUniform("uPointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        shader.setUniform("uPointLights[2].constant", 1.0f);
+        shader.setUniform("uPointLights[2].linear", 0.09f);
+        shader.setUniform("uPointLights[2].quadratic", 0.032f);
+
+        shader.setUniform("uPointLights[3].position", POINT_LIGHTS_POSITIONS[3]);
+
+        shader.setUniform("uPointLights[3].ambient", glm::vec3(0.0f));
+        shader.setUniform("uPointLights[3].diffuse", glm::vec3(2.0f));
+        shader.setUniform("uPointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        shader.setUniform("uPointLights[3].constant", 1.0f);
+        shader.setUniform("uPointLights[3].linear", 0.09f);
+        shader.setUniform("uPointLights[3].quadratic", 0.032f);
+
+        //minor // Spot light //
+
+        shader.setUniform("uSpotLight.position", camera.position);
+        shader.setUniform("uSpotLight.direction", camera.front);
+        shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(20.0f)));
+        shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+
+        shader.setUniform("uSpotLight.ambient", glm::vec3(0.05f));
+        shader.setUniform("uSpotLight.diffuse", glm::vec3(2.0f));
+        shader.setUniform("uSpotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        //minor // Other stuff //
 
         shader.setUniform("uMaterial.shininess", 16.0f);
 
@@ -201,13 +251,11 @@ int main() {
 
         lightingShader.setUniform("uColor", glm::vec3(1.0f));
 
-        model = glm::translate(UNIT_MATRIX, lightPosition);
-        // model = glm::scale(model, glm::vec3(5));
-        lightingShader.setUniform("uModel", model);
-
-        glBindVertexArray(lightVao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.ebo);
-        glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+        for (auto lightPosition: POINT_LIGHTS_POSITIONS) {
+            model = glm::translate(UNIT_MATRIX, lightPosition);
+            lightingShader.setUniform("uModel", model);
+            mesh.draw();
+        }
 
         //minor // ImGui //
 
