@@ -8,11 +8,10 @@
 
 class Texture {
 public:
-    unsigned int textureId = 0;
+    unsigned int textureId{};
 
     Texture(const std::string &textureFilePath, int filterMode) {
-        int width, height, numberOfChannels;
-        unsigned char *data;
+        int width, height, numberOfComponents;
 
         glGenTextures(1, &textureId);
         glBindTexture(GL_TEXTURE_2D, textureId);
@@ -20,9 +19,13 @@ public:
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode);
 
-        data = stbi_load(textureFilePath.c_str(), &width, &height, &numberOfChannels, 0);
+        unsigned char *data = stbi_load(textureFilePath.c_str(), &width, &height, &numberOfComponents, 0);
         if (data) {
-            int format = (numberOfChannels == 4)? GL_RGBA : GL_RGB;
+            int format;
+            if (numberOfComponents == 1) format = GL_RED;
+            else if (numberOfComponents == 3) format = GL_RGB;
+            else format = GL_RGBA;
+
             glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }

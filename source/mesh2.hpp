@@ -17,6 +17,7 @@ struct Vertex {
 struct Texture {
     unsigned int id;
     std::string type;
+    std::string path;
 };
 
 class Mesh {
@@ -83,5 +84,5 @@ public:
     }
 
 private:
-    unsigned int vao = 0, vbo = 0, ebo = 0;
+    unsigned int vao{}, vbo{}, ebo{};
 };
