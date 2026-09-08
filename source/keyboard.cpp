@@ -44,6 +44,8 @@ static void wireframeMode() {
     }
 }
 
+bool flashlight = false;
+
 bool debugMenu = false;
 
 //info // Input //
@@ -64,6 +66,8 @@ void processingTheInput(GLFWwindow *window) {
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_R)) backgroundColor = randomRgbColor();
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_Q)) wireframeMode();
+
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_E)) flashlight = !flashlight;
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_F3)) debugMenu = !debugMenu;
 }

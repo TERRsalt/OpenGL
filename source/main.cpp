@@ -31,7 +31,7 @@ int main() {
     Shader shader("shaders/vertex.vert", "shaders/blocks.frag");
     shader.use();
 
-    //info // Vertex and buffer(s) data //
+    //info // Meshes and models //
 
     stbi_set_flip_vertically_on_load(true);
 
@@ -174,8 +174,14 @@ int main() {
 
         shader.setUniform("uSpotLight.position", camera.position);
         shader.setUniform("uSpotLight.direction", camera.front);
-        shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(20.0f)));
-        shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+        if (flashlight) {
+            shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(20.0f)));
+            shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+        }
+        else {
+            shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(0.0f)));
+            shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(0.0f)));
+        }
 
         shader.setUniform("uSpotLight.ambient", glm::vec3(0.05f));
         shader.setUniform("uSpotLight.diffuse", glm::vec3(2.0f));
@@ -278,16 +284,6 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
-    //info // Cleanup //
-
-    shader.remove();
-    mesh.remove();
-    // texture.remove();
-    container.remove();
-    containerSpecular.remove();
-    matrixEmission.remove();
-    debugUi::remove();
 
     //info // Closing the window //
 

@@ -7,4 +7,6 @@ extern glm::vec3 backgroundColor;
 
 void processingTheInput(GLFWwindow *window);
 
+extern bool flashlight;
+
 extern bool debugMenu;
