@@ -21,22 +21,27 @@
 #include "mesh.hpp"
 #include "time.hpp"
 #include "debugUi.hpp"
+#include "model.hpp"
 
 int main() {
     GLFWwindow *window = init();
 
     //info // Shaders //
 
-    Shader shader("../shaders/vertex.vert", "../shaders/blocks.frag");
+    Shader shader("shaders/vertex.vert", "shaders/blocks.frag");
     shader.use();
 
     //info // Vertex and buffer(s) data //
 
-    Mesh mesh(indices);
+    stbi_set_flip_vertically_on_load(true);
+
+    const Mesh mesh(indices);
+
+    Model backpackModel = Model("assets/backpack/backpack.obj");
 
     //info // Lighting //
 
-    Shader lightingShader("../shaders/vertex.vert", "../shaders/lightSource.frag");
+    const Shader lightingShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
     unsigned int lightVao;
     glGenVertexArrays(1, &lightVao);
@@ -45,28 +50,26 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
 
     //exp // Lighting attributes //
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(float), reinterpret_cast<void*>(0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
 
     //info // Textures //
 
     backgroundColor = colors::SKY_BLUE;
 
-    stbi_set_flip_vertically_on_load(true);
-
     // Texture texture("assets/atlas.png", GL_NEAREST);
     // shader.setUniform("uTexture", 0);
     // texture.bind(0);
 
-    Texture container("assets/container.png", GL_LINEAR);
+    const Texture container("assets/container.png", GL_LINEAR);
     container.bind(0);
     shader.setUniform("uMaterial.diffuse", 0);
 
-    Texture containerSpecular("assets/containerSpecular.png", GL_LINEAR);
+    const Texture containerSpecular("assets/containerSpecular.png", GL_LINEAR);
     containerSpecular.bind(1);
     shader.setUniform("uMaterial.specular", 1);
 
-    Texture matrixEmission("assets/matrix.jpg", GL_LINEAR);
+    const Texture matrixEmission("assets/matrix.jpg", GL_LINEAR);
     matrixEmission.bind(2);
     shader.setUniform("uMaterial.emission", 2);
 
@@ -76,7 +79,7 @@ int main() {
 
     //info // Floating cubes //
 
-    std::vector<glm::vec3> floatingCubes = generateFloatingCubes();
+    const std::vector<glm::vec3> floatingCubes = generateFloatingCubes();
 
     //info // Point lights positions //
 
@@ -241,6 +244,15 @@ int main() {
             shader.setUniform("uModel", model);
             mesh.draw();
         }
+
+        //minor // Drawing the backpack model //
+
+        shader.use();
+
+        model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
+        shader.setUniform("uModel", model);
+        backpackModel.draw(shader);
 
         //minor // Drawing the light source //
 

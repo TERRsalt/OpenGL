@@ -7,6 +7,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(assimp REQUIRED)
 
 #info # GLAD  #
 
@@ -90,5 +91,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     glad
     glm::glm
+    assimp::assimp
     imgui
 )

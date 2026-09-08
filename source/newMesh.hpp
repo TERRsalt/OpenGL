@@ -14,20 +14,20 @@ struct Vertex {
     glm::vec2 textureCoordinates;
 };
 
-struct Texture {
+struct NewTexture {
     unsigned int id;
     std::string type;
     std::string path;
 };
 
-class Mesh {
+class NewMesh {
 public:
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<Texture> textures;
+    std::vector<NewTexture> textures;
 
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures):
-            vertices(std::move(vertices)), indices(std::move(indices)), textures(std::move(textures)) {
+    NewMesh(std::vector<Vertex> verticesIn, std::vector<unsigned int> indicesIn, std::vector<NewTexture> texturesIn):
+            vertices(std::move(verticesIn)), indices(std::move(indicesIn)), textures(std::move(texturesIn)) {
         glGenBuffers(1, &vbo);
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &ebo);
@@ -50,7 +50,7 @@ public:
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
         glEnableVertexAttribArray(1);
 
-        //exp // Texture attributes //
+        //exp // NewTexture attributes //
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, textureCoordinates)));
         glEnableVertexAttribArray(2);
 
@@ -70,8 +70,8 @@ public:
         for (int i = 0; i < textures.size(); i++) {
             glActiveTexture(GL_TEXTURE0 + i);
 
-            if (textures[i].type == "textureDiffuse") shader.setUniform("uMaterial.diffuse", i);
-            else if (textures[i].type == "textureSpecular") shader.setUniform("uMaterial.specular", i);
+            if (textures[i].type == "texture_diffuse") shader.setUniform("uMaterial.diffuse", i);
+            else if (textures[i].type == "texture_specular") shader.setUniform("uMaterial.specular", i);
 
             glBindTexture(GL_TEXTURE_2D, textures[i].id);
         }
