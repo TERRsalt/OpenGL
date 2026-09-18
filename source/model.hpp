@@ -19,7 +19,7 @@
 
 class Model {
 public:
-    explicit Model(const std::string &modelPath) {
+    Model(const std::string &modelPath) {
         Assimp::Importer import;
         const aiScene *scene = import.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_FlipUVs);
 

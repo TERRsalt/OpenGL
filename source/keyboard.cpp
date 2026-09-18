@@ -9,11 +9,11 @@
 
 //info // Functions and variables for the input //
 
+static bool isPaused = false;
 static void pause(GLFWwindow *window) {
-    static bool isPaused = false;
     isPaused = !isPaused;
 
-    if (isPaused == false) {
+    if (!isPaused) {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         camera.isTheFirstTimeInCameraMovement = true;
     }
@@ -46,7 +46,21 @@ static void wireframeMode() {
 
 bool flashlight = false;
 
+static void turnGlDepthMaskOnAndOff() {
+    static int option = GL_TRUE;
+    option = !option;
+    glDepthMask(option);
+}
+
+//minor // FsomeNumber buttons //
+
+bool fpsAndTheCoordinatesDebugMenu = false;
+
 bool debugMenu = false;
+static void enableDebugMenu(GLFWwindow *window) {
+    debugMenu = !debugMenu;
+    if (!isPaused == debugMenu) pause(window);
+}
 
 //info // Input //
 
@@ -69,5 +83,11 @@ void processingTheInput(GLFWwindow *window) {
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_E)) flashlight = !flashlight;
 
-    else if (wasKeyboardButtonPressed(window, GLFW_KEY_F3)) debugMenu = !debugMenu;
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_P)) turnGlDepthMaskOnAndOff();
+
+    //minor // FsomeNumber buttons //
+
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_F3)) fpsAndTheCoordinatesDebugMenu = !fpsAndTheCoordinatesDebugMenu;
+
+    else if (wasKeyboardButtonPressed(window, GLFW_KEY_F4)) enableDebugMenu(window);
 }

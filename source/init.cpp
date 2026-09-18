@@ -48,6 +48,9 @@ GLFWwindow *init() {
 
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_STENCIL_TEST);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
     //info // Picking the mouse input //
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

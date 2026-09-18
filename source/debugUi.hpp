@@ -6,5 +6,6 @@ namespace debugUi {
     void init(GLFWwindow *window);
     void remove();
 
+    void fpsAndTheCoordinates();
     void debug();
 }

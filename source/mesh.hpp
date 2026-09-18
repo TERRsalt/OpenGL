@@ -11,7 +11,7 @@ public:
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    explicit Mesh(const std::vector<unsigned int> &indices): indices(indices) {
+    Mesh(const std::vector<unsigned int> &indices): indices(indices) {
         glGenBuffers(1, &vbo);
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &ebo);

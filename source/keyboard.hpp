@@ -9,4 +9,8 @@ void processingTheInput(GLFWwindow *window);
 
 extern bool flashlight;
 
+//minor // FsomeNumber buttons //
+
+extern bool fpsAndTheCoordinatesDebugMenu;
+
 extern bool debugMenu;

@@ -31,6 +31,8 @@ int main() {
     Shader shader("shaders/vertex.vert", "shaders/blocks.frag");
     shader.use();
 
+    Shader singleColor("shaders/vertex.vert", "shaders/singleColor.frag");
+
     //info // Meshes and models //
 
     stbi_set_flip_vertically_on_load(true);
@@ -112,7 +114,10 @@ int main() {
         //minor // Clearing the screen (and painting it with some color) //
 
         glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+        glStencilMask(0x00);
+        glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
         //minor // Using the shaders and updating the view position //
 
@@ -251,9 +256,33 @@ int main() {
             mesh.draw();
         }
 
-        //minor // Drawing the backpack model //
+        //minor // Stencil //
 
-        shader.use();
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glStencilMask(0xFF);
+        mesh.updateVertices(blocks["container"]);
+        model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
+        shader.setUniform("uModel", model);
+        mesh.draw();
+
+        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        glStencilMask(0x00);
+        glDisable(GL_DEPTH_TEST);
+        singleColor.use();
+        singleColor.setUniform("uView", view);
+        singleColor.setUniform("uProjection", camera.projection);
+
+        mesh.updateVertices(blocks["container"]);
+        model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
+        model = glm::scale(model, glm::vec3(1.1));
+        singleColor.setUniform("uModel", model);
+        mesh.draw();
+
+        glStencilMask(0xFF);
+        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        glEnable(GL_DEPTH_TEST);
+
+        //minor // Drawing the backpack model //
 
         model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.0f));
@@ -276,6 +305,8 @@ int main() {
         }
 
         //minor // ImGui //
+
+        if (fpsAndTheCoordinatesDebugMenu) debugUi::fpsAndTheCoordinates();
 
         if (debugMenu) debugUi::debug();
 
