@@ -9,3 +9,10 @@ extern std::vector<unsigned int> indices;
 extern std::map<std::string, std::vector<float>> blocks;
 
 extern std::vector<glm::vec3> generateFloatingCubes();
+
+//info // Transparent "blocks" position //
+
+struct TransparentBlockPosition {
+    std::string type;
+    glm::vec3 position;
+};

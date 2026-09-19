@@ -8,6 +8,5 @@ uniform sampler2D uTexture;
 
 void main() {
     vec4 textureColor = texture(uTexture, TextureCoordinates);
-    if (textureColor.a < 0.1) discard;
     FragmentColor = textureColor;
 }

@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <ranges>
 
 #include "files.hpp"
 #include "keyboard.hpp"
@@ -111,13 +112,9 @@ int main() {
 
         // glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
-        //minor // Using the shaders and updating the view position //
+        //minor // Directional light //
 
         blocksWithLightingShader.use();
-
-        blocksWithLightingShader.setUniform("uViewPosition", camera.position);
-
-        //minor // Directional light //
 
         blocksWithLightingShader.setUniform("uDirectionalLight.direction", glm::vec3(-100.0f, -100.0f, -200.0f));
 
@@ -246,16 +243,6 @@ int main() {
             mesh.draw();
         }
 
-        //minor // Drawing the grass and glass (transparent "blocks") //
-
-        transparentShader.use();
-        transparentShader.setViewAndDirection(view);
-        mesh.updateVertices(blocks["grass"]);
-        model = glm::translate(UNIT_MATRIX, glm::vec3(-3.0f, 1.5f, -3.5f));
-        model = glm::scale(model, glm::vec3(2.0f));
-        transparentShader.setUniform("uModel", model);
-        mesh.draw();
-
         //minor // Stencil //
 
         // glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -301,6 +288,39 @@ int main() {
             lightSourceShader.setUniform("uModel", model);
             mesh.draw();
         }
+
+        //minor // Drawing the grass and glass (transparent "blocks") //
+
+        glEnable(GL_CULL_FACE);
+
+        transparentShader.use();
+        transparentShader.setViewAndDirection(view);
+
+        std::vector<TransparentBlockPosition> transparentBlocksPosition = {
+            {"grass", {3.0f, 1.05f, 3.0f}},
+            {"glass", {-3.0f, 1.05f, -3.0f}},
+            {"glass", {0.0f, 1.05f, 3.0f}}
+        };
+
+        std::multimap<float, TransparentBlockPosition> sorted;
+        for (const auto &transparentBlockPosition: transparentBlocksPosition) {
+            float distance = glm::length(camera.position - transparentBlockPosition.position);
+            sorted.emplace(distance, transparentBlockPosition);
+        }
+
+        for (auto &transparentBlock: std::views::reverse(sorted)) {
+            const TransparentBlockPosition &block = transparentBlock.second;
+            mesh.updateVertices(blocks[block.type]);
+            model = glm::translate(UNIT_MATRIX, block.position);
+            transparentShader.setUniform("uModel", model);
+
+            glCullFace(GL_FRONT);
+            mesh.draw();
+            glCullFace(GL_BACK);
+            mesh.draw();
+        }
+
+        glDisable(GL_CULL_FACE);
 
         //minor // ImGui //
 

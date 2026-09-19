@@ -44,9 +44,12 @@ GLFWwindow *init() {
         return nullptr;
     }
 
-    //info // Depth and stencil testing //
+    //info // `glEnable()` //
 
     glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // glEnable(GL_STENCIL_TEST);
     // glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
