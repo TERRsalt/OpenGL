@@ -44,12 +44,12 @@ GLFWwindow *init() {
         return nullptr;
     }
 
-    //info // Depth testing //
+    //info // Depth and stencil testing //
 
     glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_STENCIL_TEST);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    // glEnable(GL_STENCIL_TEST);
+    // glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     //info // Picking the mouse input //
 

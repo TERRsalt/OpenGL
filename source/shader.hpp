@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 
 #include "files.hpp"
+#include "camera.hpp"
 
 class Shader {
 public:
@@ -67,6 +68,12 @@ public:
     }
 
     void use() const {glUseProgram(shaderProgramId);}
+
+    void setViewAndDirection(const glm::mat4 &view) const {
+        this->setUniform("uView", view);
+        this->setUniform("uProjection", camera.projection);
+    }
+
     void remove() const {glDeleteProgram(shaderProgramId);}
 
     //minor // `setUniform` methods //

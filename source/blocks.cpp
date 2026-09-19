@@ -4,13 +4,12 @@
 
 #include <glm/glm.hpp>
 
-#include "colors.hpp"
 #include "random.hpp"
 
 //info // Generating block from texture atlas //
 
 glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
-    constexpr unsigned int ATLAS_SIZE = 1; //minor // Change this value, depending on the texture/atlas //
+    constexpr unsigned int ATLAS_SIZE = 2; //minor // Change this value, depending on the atlas (ATLAS_SIZE x ATLAS_SIZE) //
 
     const float FLIPPED_Y = ATLAS_SIZE - 1 - textureCoordinates.y;
     constexpr float BLEED_MARGIN = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
@@ -173,19 +172,25 @@ std::vector<unsigned int> indices = {
 std::map<std::string, std::vector<float>> blocks = {
     //minor // Atlas blocks //
 
-    {"stone", blockGenerator({1, 0}, {1, 0},
-            {1, 0}, {1, 0}, {1, 0}, {1, 0})},
-    {"dirt", blockGenerator({2, 0}, {2, 0},
-            {2, 0}, {2, 0}, {2, 0}, {2, 0})},
-    {"grass", blockGenerator({3, 0}, {3, 0},
-            {3, 0}, {3, 0}, {8, 2}, {2, 0})},
-    {"wood", blockGenerator({4, 1}, {4, 1},
-            {4, 1}, {4, 1}, {5, 1}, {5, 1})},
+    // {"stone", blockGenerator({1, 0}, {1, 0},
+    //         {1, 0}, {1, 0}, {1, 0}, {1, 0})},
+    // {"dirt", blockGenerator({2, 0}, {2, 0},
+    //         {2, 0}, {2, 0}, {2, 0}, {2, 0})},
+    // {"grass", blockGenerator({3, 0}, {3, 0},
+    //         {3, 0}, {3, 0}, {8, 2}, {2, 0})},
+    // {"wood", blockGenerator({4, 1}, {4, 1},
+    //         {4, 1}, {4, 1}, {5, 1}, {5, 1})},
 
-    //minor // Other blocks //
+    //minor // Atlas 2 blocks //
 
     {"container", blockGenerator({0, 0}, {0, 0},
-            {0, 0}, {0, 0}, {0, 0}, {0, 0})}
+            {0, 0}, {0, 0}, {0, 0}, {0, 0})},
+
+    {"grass", blockGenerator({0, 1}, {1, 0},
+            {1, 0}, {1, 0}, {1, 0}, {1, 0})},
+
+    {"glass", blockGenerator({1, 1}, {1, 1},
+            {1, 1}, {1, 1}, {1, 1}, {1, 1})}
 };
 
 //info // Vector containing floating cubes //

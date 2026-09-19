@@ -28,10 +28,13 @@ int main() {
 
     //info // Shaders //
 
-    Shader shader("shaders/vertex.vert", "shaders/blocks.frag");
-    shader.use();
+    Shader blocksWithLightingShader("shaders/vertex.vert", "shaders/blocksWithLighting.frag");
 
-    Shader singleColor("shaders/vertex.vert", "shaders/singleColor.frag");
+    // Shader singleColorShaderShader("shaders/vertex.vert", "shaders/singleColorShader.frag");
+
+    Shader transparentShader("shaders/vertex.vert", "shaders/transparent.frag");
+
+    Shader lightSourceShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
     //info // Meshes and models //
 
@@ -42,8 +45,6 @@ int main() {
     Model backpackModel = Model("assets/backpack/backpack.obj");
 
     //info // Lighting //
-
-    const Shader lightingShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
     unsigned int lightVao;
     glGenVertexArrays(1, &lightVao);
@@ -59,21 +60,13 @@ int main() {
 
     backgroundColor = colors::SKY_BLUE;
 
-    // Texture texture("assets/atlas.png", GL_NEAREST);
-    // shader.setUniform("uTexture", 0);
-    // texture.bind(0);
+    const Texture atlas2("assets/atlas2.png", GL_LINEAR);
+    atlas2.bind(0);
+    blocksWithLightingShader.setUniform("uMaterial.diffuse", 0);
 
-    const Texture container("assets/container.png", GL_LINEAR);
-    container.bind(0);
-    shader.setUniform("uMaterial.diffuse", 0);
-
-    const Texture containerSpecular("assets/containerSpecular.png", GL_LINEAR);
-    containerSpecular.bind(1);
-    shader.setUniform("uMaterial.specular", 1);
-
-    const Texture matrixEmission("assets/matrix.jpg", GL_LINEAR);
-    matrixEmission.bind(2);
-    shader.setUniform("uMaterial.emission", 2);
+    const Texture atlas2Specular("assets/atlas2Specular.png", GL_LINEAR);
+    atlas2Specular.bind(1);
+    blocksWithLightingShader.setUniform("uMaterial.specular", 1);
 
     //info // Camera //
 
@@ -116,129 +109,126 @@ int main() {
         glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        glStencilMask(0x00);
-        glStencilFunc(GL_ALWAYS, 0, 0xFF);
+        // glStencilFunc(GL_ALWAYS, 0, 0xFF);
 
         //minor // Using the shaders and updating the view position //
 
-        shader.use();
+        blocksWithLightingShader.use();
 
-        shader.setUniform("uViewPosition", camera.position);
+        blocksWithLightingShader.setUniform("uViewPosition", camera.position);
 
         //minor // Directional light //
 
-        shader.setUniform("uDirectionalLight.direction", glm::vec3(-100.0f, -100.0f, -200.0f));
+        blocksWithLightingShader.setUniform("uDirectionalLight.direction", glm::vec3(-100.0f, -100.0f, -200.0f));
 
-        shader.setUniform("uDirectionalLight.ambient", glm::vec3(0.05f));
-        shader.setUniform("uDirectionalLight.diffuse", glm::vec3(2.0f));
-        shader.setUniform("uDirectionalLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uDirectionalLight.ambient", glm::vec3(0.05f));
+        blocksWithLightingShader.setUniform("uDirectionalLight.diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uDirectionalLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
         //minor // Point light //
 
-        shader.setUniform("uPointLights[0].position", POINT_LIGHTS_POSITIONS[0]);
+        blocksWithLightingShader.setUniform("uPointLights[0].position", POINT_LIGHTS_POSITIONS[0]);
 
-        shader.setUniform("uPointLights[0].ambient", glm::vec3(0.05f));
-        shader.setUniform("uPointLights[0].diffuse", glm::vec3(2.0f));
-        shader.setUniform("uPointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uPointLights[0].ambient", glm::vec3(0.05f));
+        blocksWithLightingShader.setUniform("uPointLights[0].diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uPointLights[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        shader.setUniform("uPointLights[0].constant", 1.0f);
-        shader.setUniform("uPointLights[0].linear", 0.09f);
-        shader.setUniform("uPointLights[0].quadratic", 0.032f);
+        blocksWithLightingShader.setUniform("uPointLights[0].constant", 1.0f);
+        blocksWithLightingShader.setUniform("uPointLights[0].linear", 0.09f);
+        blocksWithLightingShader.setUniform("uPointLights[0].quadratic", 0.032f);
 
-        shader.setUniform("uPointLights[1].position", POINT_LIGHTS_POSITIONS[1]);
+        blocksWithLightingShader.setUniform("uPointLights[1].position", POINT_LIGHTS_POSITIONS[1]);
 
-        shader.setUniform("uPointLights[1].ambient", glm::vec3(0.05f));
-        shader.setUniform("uPointLights[1].diffuse", glm::vec3(2.0f));
-        shader.setUniform("uPointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uPointLights[1].ambient", glm::vec3(0.05f));
+        blocksWithLightingShader.setUniform("uPointLights[1].diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uPointLights[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        shader.setUniform("uPointLights[1].constant", 1.0f);
-        shader.setUniform("uPointLights[1].linear", 0.09f);
-        shader.setUniform("uPointLights[1].quadratic", 0.032f);
+        blocksWithLightingShader.setUniform("uPointLights[1].constant", 1.0f);
+        blocksWithLightingShader.setUniform("uPointLights[1].linear", 0.09f);
+        blocksWithLightingShader.setUniform("uPointLights[1].quadratic", 0.032f);
 
-        shader.setUniform("uPointLights[2].position", POINT_LIGHTS_POSITIONS[2]);
+        blocksWithLightingShader.setUniform("uPointLights[2].position", POINT_LIGHTS_POSITIONS[2]);
 
-        shader.setUniform("uPointLights[2].ambient", glm::vec3(0.05f));
-        shader.setUniform("uPointLights[2].diffuse", glm::vec3(2.0f));
-        shader.setUniform("uPointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uPointLights[2].ambient", glm::vec3(0.05f));
+        blocksWithLightingShader.setUniform("uPointLights[2].diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uPointLights[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        shader.setUniform("uPointLights[2].constant", 1.0f);
-        shader.setUniform("uPointLights[2].linear", 0.09f);
-        shader.setUniform("uPointLights[2].quadratic", 0.032f);
+        blocksWithLightingShader.setUniform("uPointLights[2].constant", 1.0f);
+        blocksWithLightingShader.setUniform("uPointLights[2].linear", 0.09f);
+        blocksWithLightingShader.setUniform("uPointLights[2].quadratic", 0.032f);
 
-        shader.setUniform("uPointLights[3].position", POINT_LIGHTS_POSITIONS[3]);
+        blocksWithLightingShader.setUniform("uPointLights[3].position", POINT_LIGHTS_POSITIONS[3]);
 
-        shader.setUniform("uPointLights[3].ambient", glm::vec3(0.0f));
-        shader.setUniform("uPointLights[3].diffuse", glm::vec3(2.0f));
-        shader.setUniform("uPointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uPointLights[3].ambient", glm::vec3(0.0f));
+        blocksWithLightingShader.setUniform("uPointLights[3].diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uPointLights[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
-        shader.setUniform("uPointLights[3].constant", 1.0f);
-        shader.setUniform("uPointLights[3].linear", 0.09f);
-        shader.setUniform("uPointLights[3].quadratic", 0.032f);
+        blocksWithLightingShader.setUniform("uPointLights[3].constant", 1.0f);
+        blocksWithLightingShader.setUniform("uPointLights[3].linear", 0.09f);
+        blocksWithLightingShader.setUniform("uPointLights[3].quadratic", 0.032f);
 
         //minor // Spot light //
 
-        shader.setUniform("uSpotLight.position", camera.position);
-        shader.setUniform("uSpotLight.direction", camera.front);
+        blocksWithLightingShader.setUniform("uSpotLight.position", camera.position);
+        blocksWithLightingShader.setUniform("uSpotLight.direction", camera.front);
         if (flashlight) {
-            shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(20.0f)));
-            shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+            blocksWithLightingShader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(20.0f)));
+            blocksWithLightingShader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
         }
         else {
-            shader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(0.0f)));
-            shader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(0.0f)));
+            blocksWithLightingShader.setUniform("uSpotLight.cutOff", glm::cos(glm::radians(0.0f)));
+            blocksWithLightingShader.setUniform("uSpotLight.outerCutOff", glm::cos(glm::radians(0.0f)));
         }
 
-        shader.setUniform("uSpotLight.ambient", glm::vec3(0.05f));
-        shader.setUniform("uSpotLight.diffuse", glm::vec3(2.0f));
-        shader.setUniform("uSpotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        blocksWithLightingShader.setUniform("uSpotLight.ambient", glm::vec3(0.05f));
+        blocksWithLightingShader.setUniform("uSpotLight.diffuse", glm::vec3(2.0f));
+        blocksWithLightingShader.setUniform("uSpotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
 
         //minor // Other stuff //
 
-        shader.setUniform("uMaterial.shininess", 16.0f);
+        blocksWithLightingShader.setUniform("uMaterial.shininess", 16.0f);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, container.textureId);
+        glBindTexture(GL_TEXTURE_2D, atlas2.textureId);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, containerSpecular.textureId);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, matrixEmission.textureId);
+        glBindTexture(GL_TEXTURE_2D, atlas2Specular.textureId);
 
         glm::mat4 view = glm::lookAt(camera.position, camera.position + camera.front, camera.cameraUp);
-        shader.setUniform("uView", view);
 
-        shader.setUniform("uProjection", camera.projection);
+        glm::mat4 model;
 
         //minor // Drawing the blocks //
 
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
-        glm::mat4 model;
+
+        blocksWithLightingShader.setViewAndDirection(view);
 
         mesh.updateVertices(blocks["container"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
             for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                 model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
-                shader.setUniform("uModel", model);
+                blocksWithLightingShader.setUniform("uModel", model);
                 mesh.draw();
             }
         }
 
-        mesh.updateVertices(blocks["container"]);
+        // mesh.updateVertices(blocks["container"]);
         for (int y = -1; y >= -2; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                     model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
-                    shader.setUniform("uModel", model);
+                    blocksWithLightingShader.setUniform("uModel", model);
                     mesh.draw();
                 }
             }
         }
 
-        mesh.updateVertices(blocks["container"]);
+        // mesh.updateVertices(blocks["container"]);
         for (int y = -3; y >= -9; y--) {
             for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                     model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
-                    shader.setUniform("uModel", model);
+                    blocksWithLightingShader.setUniform("uModel", model);
                     mesh.draw();
                 }
             }
@@ -252,55 +242,63 @@ int main() {
             model = glm::translate(UNIT_MATRIX, floatingCube);
             model = glm::rotate(model, glm::radians(degrees + additionalDegrees), glm::vec3(1.0f, 0.3f, 0.5f));
             additionalDegrees += 30;
-            shader.setUniform("uModel", model);
+            blocksWithLightingShader.setUniform("uModel", model);
             mesh.draw();
         }
 
+        //minor // Drawing the grass and glass (transparent "blocks") //
+
+        transparentShader.use();
+        transparentShader.setViewAndDirection(view);
+        mesh.updateVertices(blocks["grass"]);
+        model = glm::translate(UNIT_MATRIX, glm::vec3(-3.0f, 1.5f, -3.5f));
+        model = glm::scale(model, glm::vec3(2.0f));
+        transparentShader.setUniform("uModel", model);
+        mesh.draw();
+
         //minor // Stencil //
 
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glStencilMask(0xFF);
-        mesh.updateVertices(blocks["container"]);
-        model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
-        shader.setUniform("uModel", model);
-        mesh.draw();
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00);
-        glDisable(GL_DEPTH_TEST);
-        singleColor.use();
-        singleColor.setUniform("uView", view);
-        singleColor.setUniform("uProjection", camera.projection);
-
-        mesh.updateVertices(blocks["container"]);
-        model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
-        model = glm::scale(model, glm::vec3(1.1));
-        singleColor.setUniform("uModel", model);
-        mesh.draw();
-
-        glStencilMask(0xFF);
-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
-        glEnable(GL_DEPTH_TEST);
+        // glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        // glStencilMask(0xFF);
+        // mesh.updateVertices(blocks["container"]);
+        // model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
+        // shader.setUniform("uModel", model);
+        // mesh.draw();
+        //
+        // glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+        // glStencilMask(0x00);
+        // glDisable(GL_DEPTH_TEST); //exp // Needed for a true X-ray //
+        // singleColorShader.use();
+        // singleColor.setViewAndDirection(view);
+        //
+        // mesh.updateVertices(blocks["container"]);
+        // model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
+        // model = glm::scale(model, glm::vec3(1.1));
+        // singleColorShader.setUniform("uModel", model);
+        // mesh.draw();
+        //
+        // glStencilFunc(GL_ALWAYS, 1, 0xFF);
+        // glStencilMask(0xFF);
+        // glEnable(GL_DEPTH_TEST);
 
         //minor // Drawing the backpack model //
 
-        model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(1.0f));
-        shader.setUniform("uModel", model);
-        backpackModel.draw(shader);
+        // shader.use();
+        // model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
+        // model = glm::scale(model, glm::vec3(1.0f));
+        // shader.setUniform("uModel", model);
+        // backpackModel.draw(shader);
 
         //minor // Drawing the light source //
 
-        lightingShader.use();
+        lightSourceShader.use();
+        lightSourceShader.setViewAndDirection(view);
 
-        lightingShader.setUniform("uView", view);
-        lightingShader.setUniform("uProjection", camera.projection);
-
-        lightingShader.setUniform("uColor", glm::vec3(1.0f));
+        lightSourceShader.setUniform("uColor", glm::vec3(1.0f));
 
         for (auto lightPosition: POINT_LIGHTS_POSITIONS) {
             model = glm::translate(UNIT_MATRIX, lightPosition);
-            lightingShader.setUniform("uModel", model);
+            lightSourceShader.setUniform("uModel", model);
             mesh.draw();
         }
 
