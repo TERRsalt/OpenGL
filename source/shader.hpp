@@ -69,8 +69,9 @@ public:
 
     void use() const {glUseProgram(shaderProgramId);}
 
-    void setViewAndDirection(const glm::mat4 &view) const {
+    void setViewAndProjection(const glm::mat4 &view) const {
         this->setUniform("uView", view);
+        this->setUniform("uViewPosition", camera.position);
         this->setUniform("uProjection", camera.projection);
     }
 

@@ -30,6 +30,7 @@ int main() {
     //info // Shaders //
 
     Shader blocksWithLightingShader("shaders/vertex.vert", "shaders/blocksWithLighting.frag");
+    blocksWithLightingShader.use();
 
     // Shader singleColorShaderShader("shaders/vertex.vert", "shaders/singleColorShader.frag");
 
@@ -198,7 +199,7 @@ int main() {
 
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
 
-        blocksWithLightingShader.setViewAndDirection(view);
+        blocksWithLightingShader.setViewAndProjection(view);
 
         mesh.updateVertices(blocks["container"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
@@ -256,7 +257,7 @@ int main() {
         // glStencilMask(0x00);
         // glDisable(GL_DEPTH_TEST); //exp // Needed for a true X-ray //
         // singleColorShader.use();
-        // singleColor.setViewAndDirection(view);
+        // singleColor.setViewAndProjection(view);
         //
         // mesh.updateVertices(blocks["container"]);
         // model = glm::translate(UNIT_MATRIX, glm::vec3(-3, 1, -3));
@@ -279,7 +280,7 @@ int main() {
         //minor // Drawing the light source //
 
         lightSourceShader.use();
-        lightSourceShader.setViewAndDirection(view);
+        lightSourceShader.setViewAndProjection(view);
 
         lightSourceShader.setUniform("uColor", glm::vec3(1.0f));
 
@@ -291,10 +292,8 @@ int main() {
 
         //minor // Drawing the grass and glass (transparent "blocks") //
 
-        glEnable(GL_CULL_FACE);
-
         transparentShader.use();
-        transparentShader.setViewAndDirection(view);
+        transparentShader.setViewAndProjection(view);
 
         std::vector<TransparentBlockPosition> transparentBlocksPosition = {
             {"grass", {3.0f, 1.05f, 3.0f}},
@@ -319,8 +318,6 @@ int main() {
             glCullFace(GL_BACK);
             mesh.draw();
         }
-
-        glDisable(GL_CULL_FACE);
 
         //minor // ImGui //
 
