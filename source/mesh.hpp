@@ -63,3 +63,66 @@ public:
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 };
+
+class FramebufferMesh {
+public:
+    unsigned int vao = 0, vbo = 0, ebo = 0;
+
+    std::vector<float> vertices = {
+        -1.0, 1.0,
+        0.0, 1.0,
+
+        -1.0, -1.0,
+        0.0, 0.0,
+
+        1.0, -1.0,
+        1.0, 0.0,
+
+        -1.0, 1.0,
+        0.0, 1.0,
+
+        1.0, 1.0,
+        1.0, 1.0,
+
+        1.0, -1.0,
+        1.0, 0.0
+    };
+    std::vector<unsigned int> indices = {
+        0, 1, 2,
+        0, 2, 4
+    };
+
+    FramebufferMesh() {
+        glGenBuffers(1, &vbo);
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &ebo);
+
+        //info // Binding the VBO, VAO and EBO //
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(float) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
+
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<int>(sizeof(unsigned int) * indices.size()), indices.data(), GL_STATIC_DRAW);
+
+        //exp // Position attributes //
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(0));
+        glEnableVertexAttribArray(0);
+
+        //exp // Texture attributes //
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        //info // Unbinding the VBO and VAO //
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
+    void draw() const {
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, static_cast<int>(indices.size()), GL_UNSIGNED_INT, nullptr);
+    }
+};

@@ -10,7 +10,7 @@ class Texture {
 public:
     unsigned int textureId{};
 
-    Texture(const std::string &textureFilePath, int filterMode) {
+    Texture(const std::string &textureFilePath, const int filterMode) {
         int width, height, numberOfComponents;
 
         glGenTextures(1, &textureId);

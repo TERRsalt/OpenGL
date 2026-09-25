@@ -38,11 +38,15 @@ int main() {
 
     Shader lightSourceShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
+    Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+
     //info // Meshes and models //
 
     stbi_set_flip_vertically_on_load(true);
 
     const Mesh mesh(indices);
+
+    const FramebufferMesh framebufferMesh;
 
     Model backpackModel = Model("assets/backpack/backpack.obj");
 
@@ -69,6 +73,33 @@ int main() {
     const Texture atlas2Specular("assets/atlas2Specular.png", GL_LINEAR);
     atlas2Specular.bind(1);
     blocksWithLightingShader.setUniform("uMaterial.specular", 1);
+
+    //info // Framebuffer object(s) //
+
+    unsigned int fbo;
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
+    unsigned int textureColorBuffer;
+    glGenTextures(1, &textureColorBuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screenWidth, screenHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
+
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, screenWidth, screenHeight);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) std::println("Error! Framebuffer is not complete!");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     //info // Camera //
 
@@ -105,6 +136,11 @@ int main() {
             camera.characterMovement(window);
             camera.zoomingInAndOut(window);
         }
+
+        //minor // First pass of framebuffer (something similar to `pygame.Surface`) //
+
+        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        glEnable(GL_DEPTH_TEST);
 
         //minor // Clearing the screen (and painting it with some color) //
 
@@ -318,6 +354,18 @@ int main() {
             glCullFace(GL_BACK);
             mesh.draw();
         }
+
+        //minor // Second pass of framebuffer //
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        framebufferShader.use();
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+        framebufferMesh.draw();
 
         //minor // ImGui //
 
