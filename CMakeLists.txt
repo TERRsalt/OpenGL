@@ -58,6 +58,7 @@ add_executable(${PROJECT_NAME} source/main.cpp
 
     source/screen.cpp
 
+    source/texture.cpp
     source/time.cpp
 
     #minor # vendor/ #

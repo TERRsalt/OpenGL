@@ -45,3 +45,5 @@ public:
         glBindTexture(GL_TEXTURE_2D, textureId);
     }
 };
+
+unsigned int loadCubemap(std::vector<std::string> faces);

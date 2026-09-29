@@ -38,7 +38,9 @@ int main() {
 
     Shader lightSourceShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
-    Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+    Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
+
+    // Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
 
     //info // Meshes and models //
 
@@ -73,6 +75,12 @@ int main() {
     const Texture atlas2Specular("assets/atlas2Specular.png", GL_LINEAR);
     atlas2Specular.bind(1);
     blocksWithLightingShader.setUniform("uMaterial.specular", 1);
+
+    //minor // Cubemap //
+
+    std::vector<std::string> faces = {"assets/skybox/right.jpg", "assets/skybox/left.jpg", "assets/skybox/top.jpg", "assets/skybox/bottom.jpg",
+            "assets/skybox/front.jpg", "assets/skybox/back.jpg"};
+    unsigned int cubemapTexture = loadCubemap(faces);
 
     //info // Framebuffer object(s) //
 
@@ -113,7 +121,7 @@ int main() {
 
     const std::vector<glm::vec3> POINT_LIGHTS_POSITIONS = {
         {1.0f, 1.0f, -1.0f},
-        {0.0f, -5.0f, -6.0f},
+        {0.0f, -5.0f, 6.0f},
         {5.0f, -10.0f, -5.0f},
         {-10.0f, 10.0f, -10.0f},
     };
@@ -153,7 +161,7 @@ int main() {
 
         blocksWithLightingShader.use();
 
-        blocksWithLightingShader.setUniform("uDirectionalLight.direction", glm::vec3(-100.0f, -100.0f, -200.0f));
+        blocksWithLightingShader.setUniform("uDirectionalLight.direction", glm::vec3(100.0f, -100.0f, 200.0f));
 
         blocksWithLightingShader.setUniform("uDirectionalLight.ambient", glm::vec3(0.05f));
         blocksWithLightingShader.setUniform("uDirectionalLight.diffuse", glm::vec3(2.0f));
@@ -231,10 +239,24 @@ int main() {
 
         glm::mat4 model;
 
+        //minor // Drawing the skybox //
+
+        glDepthMask(GL_FALSE);
+        glDisable(GL_CULL_FACE);
+        skyboxShader.use();
+        skyboxShader.setUniform("uSkybox", 1);
+        glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
+        skyboxShader.setViewAndProjection(skyboxView);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+        mesh.draw();
+        glDepthMask(GL_TRUE);
+        glEnable(GL_CULL_FACE);
+
         //minor // Drawing the blocks //
 
         constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
 
+        blocksWithLightingShader.use();
         blocksWithLightingShader.setViewAndProjection(view);
 
         mesh.updateVertices(blocks["container"]);
