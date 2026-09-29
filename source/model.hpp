@@ -15,7 +15,7 @@
 
 #include <stb_image.h>
 
-#include "newMesh.hpp"
+#include "modelMesh.hpp"
 
 class Model {
 public:
@@ -35,9 +35,9 @@ public:
     void draw(const Shader &shader) const {for (const auto &mesh: meshes) mesh.draw(shader);}
 
 private:
-    std::vector<NewTexture> texturesLoaded;
+    std::vector<ModelTexture> texturesLoaded;
 
-    std::vector<NewMesh> meshes;
+    std::vector<ModelMesh> meshes;
     std::string directory;
 
     void processNode(const aiNode *node, const aiScene *scene) {
@@ -51,13 +51,13 @@ private:
         for (int i = 0; i < node->mNumChildren; i++) processNode(node->mChildren[i], scene);
     }
 
-    NewMesh processMesh(aiMesh *mesh, const aiScene *scene) {
-        std::vector<Vertex> vertices;
+    ModelMesh processMesh(aiMesh *mesh, const aiScene *scene) {
+        std::vector<ModelVertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<NewTexture> textures;
+        std::vector<ModelTexture> textures;
 
         for (int i = 0; i < mesh->mNumVertices; i++) {
-            Vertex vertex{};
+            ModelVertex vertex{};
 
             glm::vec3 vector3;
             vector3.x = mesh->mVertices[i].x;
@@ -89,16 +89,16 @@ private:
         }
 
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        std::vector<NewTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        std::vector<ModelTexture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        std::vector<NewTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        std::vector<ModelTexture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
         return {vertices, indices, textures};
     }
 
-    std::vector<NewTexture> loadMaterialTextures(aiMaterial *material, const aiTextureType type, const std::string &typeName) {
-        std::vector<NewTexture> textures;
+    std::vector<ModelTexture> loadMaterialTextures(aiMaterial *material, const aiTextureType type, const std::string &typeName) {
+        std::vector<ModelTexture> textures;
         for (int i = 0; i < material->GetTextureCount(type); i++) {
             aiString texturePath;
             material->GetTexture(type, i, &texturePath);
@@ -113,7 +113,7 @@ private:
             }
 
             if (!skipTexture) {
-                NewTexture texture;
+                ModelTexture texture;
                 texture.id = TextureFromFile(directory + "/" + texturePath.C_Str());
                 texture.type = typeName;
                 texture.path = texturePath.C_Str();

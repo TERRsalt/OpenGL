@@ -8,25 +8,25 @@
 
 #include "shader.hpp"
 
-struct Vertex {
+struct ModelVertex {
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 textureCoordinates;
 };
 
-struct NewTexture {
+struct ModelTexture {
     unsigned int id;
     std::string type;
     std::string path;
 };
 
-class NewMesh {
+class ModelMesh {
 public:
-    std::vector<Vertex> vertices;
+    std::vector<ModelVertex> vertices;
     std::vector<unsigned int> indices;
-    std::vector<NewTexture> textures;
+    std::vector<ModelTexture> textures;
 
-    NewMesh(std::vector<Vertex> verticesIn, std::vector<unsigned int> indicesIn, std::vector<NewTexture> texturesIn):
+    ModelMesh(std::vector<ModelVertex> verticesIn, std::vector<unsigned int> indicesIn, std::vector<ModelTexture> texturesIn):
             vertices(std::move(verticesIn)), indices(std::move(indicesIn)), textures(std::move(texturesIn)) {
         glGenBuffers(1, &vbo);
         glGenVertexArrays(1, &vao);
@@ -35,7 +35,7 @@ public:
         //info // Binding the VBO, VAO and EBO //
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(Vertex) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<int>(sizeof(ModelVertex) * vertices.size()), vertices.data(), GL_STATIC_DRAW);
 
         glBindVertexArray(vao);
 
@@ -43,15 +43,15 @@ public:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<int>(sizeof(unsigned int) * indices.size()), indices.data(), GL_STATIC_DRAW);
 
         //exp // Position attributes //
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(0));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(0));
         glEnableVertexAttribArray(0);
 
         //exp // Normal attributes //
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, normal)));
         glEnableVertexAttribArray(1);
 
         //exp // NewTexture attributes //
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, textureCoordinates)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(ModelVertex), reinterpret_cast<void*>(offsetof(ModelVertex, textureCoordinates)));
         glEnableVertexAttribArray(2);
 
         //info // Unbinding the VBO and VAO //

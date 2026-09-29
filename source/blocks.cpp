@@ -139,34 +139,6 @@ std::vector<float> blockGenerator(glm::ivec2 frontTextureCoordinates, glm::ivec2
     };
 }
 
-//info // Indices //
-
-std::vector<unsigned int> indices = {
-    //minor // Front face //
-    0, 1, 2,
-    0, 2, 3,
-
-    //minor // Back face //
-    4, 5, 6,
-    4, 6, 7,
-
-    //minor // Left face //
-    8, 9, 10,
-    8, 10, 11,
-
-    //minor // Right face //
-    12, 13, 14,
-    12, 14, 15,
-
-    //minor // Top face //
-    16, 17, 18,
-    16, 18, 19,
-
-    //minor // Bottom face //
-    20, 21, 22,
-    20, 22, 23
-};
-
 //info // Blocks //
 
 std::map<std::string, std::vector<float>> blocks = {
@@ -205,49 +177,3 @@ std::vector<glm::vec3> generateFloatingCubes() {
 
     return floatingCubes;
 }
-
-//info // Vertex data about the skybox //
-
-float skyboxVertices[] = {
-    -1.0f,  1.0f, -1.0f,
-    -1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f, -1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-
-    -1.0f, -1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f,
-    -1.0f, -1.0f,  1.0f,
-
-    -1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f, -1.0f,
-     1.0f,  1.0f,  1.0f,
-     1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f,  1.0f,
-    -1.0f,  1.0f, -1.0f,
-
-    -1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f, -1.0f,
-     1.0f, -1.0f, -1.0f,
-    -1.0f, -1.0f,  1.0f,
-     1.0f, -1.0f,  1.0f
-};

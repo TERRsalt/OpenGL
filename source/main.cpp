@@ -1,5 +1,6 @@
 #include <print>
 #include <cmath>
+#include <numeric>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -32,23 +33,118 @@ int main() {
     Shader blocksWithLightingShader("shaders/vertex.vert", "shaders/blocksWithLighting.frag");
     blocksWithLightingShader.use();
 
-    // Shader singleColorShaderShader("shaders/vertex.vert", "shaders/singleColorShader.frag");
-
     Shader transparentShader("shaders/vertex.vert", "shaders/transparent.frag");
 
     Shader lightSourceShader("shaders/vertex.vert", "shaders/lightSource.frag");
 
     Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 
-    // Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+    // Shader singleColorShaderShader("shaders/vertex.vert", "shaders/singleColorShader.frag"); //exp // Needed for stencil //
+
+    Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
 
     //info // Meshes and models //
 
     stbi_set_flip_vertically_on_load(true);
 
-    const Mesh mesh(indices);
+    const std::vector<float> SKYBOX_VERTICES = {
+        -1.0, 1.0, -1.0,
+        -1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        1.0, 1.0, -1.0,
+        -1.0, 1.0, -1.0,
 
-    const FramebufferMesh framebufferMesh;
+        -1.0, -1.0, 1.0,
+        -1.0, -1.0, -1.0,
+        -1.0, 1.0, -1.0,
+        -1.0, 1.0, -1.0,
+        -1.0, 1.0, 1.0,
+        -1.0, -1.0, 1.0,
+
+        1.0, -1.0, -1.0,
+        1.0, -1.0, 1.0,
+        1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+        1.0, 1.0, -1.0,
+        1.0, -1.0, -1.0,
+
+        -1.0, -1.0, 1.0,
+        -1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+        1.0, -1.0, 1.0,
+        -1.0, -1.0, 1.0,
+
+        -1.0, 1.0, -1.0,
+        1.0, 1.0, -1.0,
+        1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0,
+        -1.0, 1.0, 1.0,
+        -1.0, 1.0, -1.0,
+
+        -1.0, -1.0, -1.0,
+        -1.0, -1.0, 1.0,
+        1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,
+        -1.0, -1.0, 1.0,
+        1.0, -1.0, 1.0
+    };
+    std::vector<unsigned int> skyboxIndices(36);
+    std::iota(skyboxIndices.begin(), skyboxIndices.end(), 0);
+    const Mesh skyboxMesh(SKYBOX_VERTICES, skyboxIndices, Mesh::POSITION3);
+
+    const std::vector<unsigned int> BLOCK_INDICES = {
+        //minor // Front face //
+        0, 1, 2,
+        0, 2, 3,
+
+        //minor // Back face //
+        4, 5, 6,
+        4, 6, 7,
+
+        //minor // Left face //
+        8, 9, 10,
+        8, 10, 11,
+
+        //minor // Right face //
+        12, 13, 14,
+        12, 14, 15,
+
+        //minor // Top face //
+        16, 17, 18,
+        16, 18, 19,
+
+        //minor // Bottom face //
+        20, 21, 22,
+        20, 22, 23
+    };
+    const Mesh blocksMesh({}, BLOCK_INDICES);
+
+    const std::vector<float> FRAMEBUFFER_VERTICES = {
+        -1.0, 1.0,
+        0.0, 1.0,
+
+        -1.0, -1.0,
+        0.0, 0.0,
+
+        1.0, -1.0,
+        1.0, 0.0,
+
+        -1.0, 1.0,
+        0.0, 1.0,
+
+        1.0, 1.0,
+        1.0, 1.0,
+
+        1.0, -1.0,
+        1.0, 0.0
+    };
+    const std::vector<unsigned int> FRAMEBUFFER_INDICES = {
+        0, 1, 2,
+        0, 2, 4
+    };
+    const Mesh framebufferMesh(FRAMEBUFFER_VERTICES, FRAMEBUFFER_INDICES, Mesh::POSITION2_TEXTURE2);
 
     Model backpackModel = Model("assets/backpack/backpack.obj");
 
@@ -58,7 +154,7 @@ int main() {
     glGenVertexArrays(1, &lightVao);
 
     glBindVertexArray(lightVao);
-    glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, blocksMesh.vbo);
 
     //exp // Lighting attributes //
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), reinterpret_cast<void*>(0));
@@ -243,14 +339,21 @@ int main() {
 
         glDepthMask(GL_FALSE);
         glDisable(GL_CULL_FACE);
+        glActiveTexture(GL_TEXTURE2);
+
         skyboxShader.use();
-        skyboxShader.setUniform("uSkybox", 1);
+        skyboxShader.setUniform("uSkybox", 2);
+
         glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
         skyboxShader.setViewAndProjection(skyboxView);
+
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        mesh.draw();
+
+        skyboxMesh.draw();
+
         glDepthMask(GL_TRUE);
         glEnable(GL_CULL_FACE);
+        glActiveTexture(GL_TEXTURE0);
 
         //minor // Drawing the blocks //
 
@@ -259,12 +362,12 @@ int main() {
         blocksWithLightingShader.use();
         blocksWithLightingShader.setViewAndProjection(view);
 
-        mesh.updateVertices(blocks["container"]);
+        blocksMesh.updateVertices(blocks["container"]);
         for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
             for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                 model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
                 blocksWithLightingShader.setUniform("uModel", model);
-                mesh.draw();
+                blocksMesh.draw();
             }
         }
 
@@ -274,7 +377,7 @@ int main() {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                     model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
                     blocksWithLightingShader.setUniform("uModel", model);
-                    mesh.draw();
+                    blocksMesh.draw();
                 }
             }
         }
@@ -285,7 +388,7 @@ int main() {
                 for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
                     model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
                     blocksWithLightingShader.setUniform("uModel", model);
-                    mesh.draw();
+                    blocksMesh.draw();
                 }
             }
         }
@@ -299,7 +402,7 @@ int main() {
             model = glm::rotate(model, glm::radians(degrees + additionalDegrees), glm::vec3(1.0f, 0.3f, 0.5f));
             additionalDegrees += 30;
             blocksWithLightingShader.setUniform("uModel", model);
-            mesh.draw();
+            blocksMesh.draw();
         }
 
         //minor // Stencil //
@@ -329,11 +432,11 @@ int main() {
 
         //minor // Drawing the backpack model //
 
-        // shader.use();
-        // model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
-        // model = glm::scale(model, glm::vec3(1.0f));
-        // shader.setUniform("uModel", model);
-        // backpackModel.draw(shader);
+        blocksWithLightingShader.use();
+        model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f));
+        blocksWithLightingShader.setUniform("uModel", model);
+        backpackModel.draw(blocksWithLightingShader);
 
         //minor // Drawing the light source //
 
@@ -345,13 +448,16 @@ int main() {
         for (auto lightPosition: POINT_LIGHTS_POSITIONS) {
             model = glm::translate(UNIT_MATRIX, lightPosition);
             lightSourceShader.setUniform("uModel", model);
-            mesh.draw();
+            blocksMesh.draw();
         }
 
         //minor // Drawing the grass and glass (transparent "blocks") //
 
         transparentShader.use();
         transparentShader.setViewAndProjection(view);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, atlas2.textureId);
 
         std::vector<TransparentBlockPosition> transparentBlocksPosition = {
             {"grass", {3.0f, 1.05f, 3.0f}},
@@ -367,14 +473,14 @@ int main() {
 
         for (auto &transparentBlock: std::views::reverse(sorted)) {
             const TransparentBlockPosition &block = transparentBlock.second;
-            mesh.updateVertices(blocks[block.type]);
+            blocksMesh.updateVertices(blocks[block.type]);
             model = glm::translate(UNIT_MATRIX, block.position);
             transparentShader.setUniform("uModel", model);
 
             glCullFace(GL_FRONT);
-            mesh.draw();
+            blocksMesh.draw();
             glCullFace(GL_BACK);
-            mesh.draw();
+            blocksMesh.draw();
         }
 
         //minor // Second pass of framebuffer //
@@ -387,6 +493,7 @@ int main() {
         // framebufferShader.use();
         // glActiveTexture(GL_TEXTURE0);
         // glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+        //
         // framebufferMesh.draw();
 
         //minor // ImGui //
