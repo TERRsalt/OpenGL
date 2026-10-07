@@ -47,7 +47,7 @@ int main() {
 
     stbi_set_flip_vertically_on_load(true);
 
-    const std::vector<float> SKYBOX_VERTICES = {
+    const std::vector<float> skyboxVertices = {
         -1.0, 1.0, -1.0,
         -1.0, -1.0, -1.0,
         1.0, -1.0, -1.0,
@@ -92,9 +92,9 @@ int main() {
     };
     std::vector<unsigned int> skyboxIndices(36);
     std::iota(skyboxIndices.begin(), skyboxIndices.end(), 0);
-    const Mesh skyboxMesh(SKYBOX_VERTICES, skyboxIndices, Mesh::POSITION3);
+    const Mesh skyboxMesh(skyboxVertices, skyboxIndices, Mesh::POSITION3);
 
-    const std::vector<unsigned int> BLOCK_INDICES = {
+    const std::vector<unsigned int> blockIndices = {
         //minor // Front face //
         0, 1, 2,
         0, 2, 3,
@@ -119,9 +119,9 @@ int main() {
         20, 21, 22,
         20, 22, 23
     };
-    const Mesh blocksMesh({}, BLOCK_INDICES);
+    const Mesh blocksMesh({}, blockIndices);
 
-    const std::vector<float> FRAMEBUFFER_VERTICES = {
+    const std::vector<float> framebufferVertices = {
         -1.0, 1.0,
         0.0, 1.0,
 
@@ -140,11 +140,11 @@ int main() {
         1.0, -1.0,
         1.0, 0.0
     };
-    const std::vector<unsigned int> FRAMEBUFFER_INDICES = {
+    const std::vector<unsigned int> framebufferIndices = {
         0, 1, 2,
         0, 2, 4
     };
-    const Mesh framebufferMesh(FRAMEBUFFER_VERTICES, FRAMEBUFFER_INDICES, Mesh::POSITION2_TEXTURE2);
+    const Mesh framebufferMesh(framebufferVertices, framebufferIndices, Mesh::POSITION2_TEXTURE2);
 
     Model backpackModel = Model("assets/backpack/backpack.obj");
 
@@ -215,7 +215,7 @@ int main() {
 
     //info // Point lights positions //
 
-    const std::vector<glm::vec3> POINT_LIGHTS_POSITIONS = {
+    const std::vector<glm::vec3> pointLightPositions = {
         {1.0f, 1.0f, -1.0f},
         {0.0f, -5.0f, 6.0f},
         {5.0f, -10.0f, -5.0f},
@@ -224,7 +224,7 @@ int main() {
 
     //info // Running the window //
 
-    constexpr auto UNIT_MATRIX = glm::mat4(1);
+    constexpr auto unitMatrix = glm::mat4(1);
 
     while (!glfwWindowShouldClose(window)) {
         //minor // Delta time //
@@ -265,7 +265,7 @@ int main() {
 
         //minor // Point light //
 
-        blocksWithLightingShader.setUniform("uPointLights[0].position", POINT_LIGHTS_POSITIONS[0]);
+        blocksWithLightingShader.setUniform("uPointLights[0].position", pointLightPositions[0]);
 
         blocksWithLightingShader.setUniform("uPointLights[0].ambient", glm::vec3(0.05f));
         blocksWithLightingShader.setUniform("uPointLights[0].diffuse", glm::vec3(2.0f));
@@ -275,7 +275,7 @@ int main() {
         blocksWithLightingShader.setUniform("uPointLights[0].linear", 0.09f);
         blocksWithLightingShader.setUniform("uPointLights[0].quadratic", 0.032f);
 
-        blocksWithLightingShader.setUniform("uPointLights[1].position", POINT_LIGHTS_POSITIONS[1]);
+        blocksWithLightingShader.setUniform("uPointLights[1].position", pointLightPositions[1]);
 
         blocksWithLightingShader.setUniform("uPointLights[1].ambient", glm::vec3(0.05f));
         blocksWithLightingShader.setUniform("uPointLights[1].diffuse", glm::vec3(2.0f));
@@ -285,7 +285,7 @@ int main() {
         blocksWithLightingShader.setUniform("uPointLights[1].linear", 0.09f);
         blocksWithLightingShader.setUniform("uPointLights[1].quadratic", 0.032f);
 
-        blocksWithLightingShader.setUniform("uPointLights[2].position", POINT_LIGHTS_POSITIONS[2]);
+        blocksWithLightingShader.setUniform("uPointLights[2].position", pointLightPositions[2]);
 
         blocksWithLightingShader.setUniform("uPointLights[2].ambient", glm::vec3(0.05f));
         blocksWithLightingShader.setUniform("uPointLights[2].diffuse", glm::vec3(2.0f));
@@ -295,7 +295,7 @@ int main() {
         blocksWithLightingShader.setUniform("uPointLights[2].linear", 0.09f);
         blocksWithLightingShader.setUniform("uPointLights[2].quadratic", 0.032f);
 
-        blocksWithLightingShader.setUniform("uPointLights[3].position", POINT_LIGHTS_POSITIONS[3]);
+        blocksWithLightingShader.setUniform("uPointLights[3].position", pointLightPositions[3]);
 
         blocksWithLightingShader.setUniform("uPointLights[3].ambient", glm::vec3(0.0f));
         blocksWithLightingShader.setUniform("uPointLights[3].diffuse", glm::vec3(2.0f));
@@ -357,15 +357,15 @@ int main() {
 
         //minor // Drawing the blocks //
 
-        constexpr int HALF_OF_THE_CHUNK_SIZE = 4;
+        constexpr int halfOfTheChunkSize = 4;
 
         blocksWithLightingShader.use();
         blocksWithLightingShader.setViewAndProjection(view);
 
         blocksMesh.updateVertices(blocks["container"]);
-        for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
-            for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
-                model = glm::translate(UNIT_MATRIX, glm::vec3(x, 0, z));
+        for (int x = -halfOfTheChunkSize; x <= halfOfTheChunkSize; x++) {
+            for (int z = -halfOfTheChunkSize; z <= halfOfTheChunkSize; z++) {
+                model = glm::translate(unitMatrix, glm::vec3(x, 0, z));
                 blocksWithLightingShader.setUniform("uModel", model);
                 blocksMesh.draw();
             }
@@ -373,9 +373,9 @@ int main() {
 
         // mesh.updateVertices(blocks["container"]);
         for (int y = -1; y >= -2; y--) {
-            for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
-                for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
-                    model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
+            for (int x = -halfOfTheChunkSize; x <= halfOfTheChunkSize; x++) {
+                for (int z = -halfOfTheChunkSize; z <= halfOfTheChunkSize; z++) {
+                    model = glm::translate(unitMatrix, glm::vec3(x, y, z));
                     blocksWithLightingShader.setUniform("uModel", model);
                     blocksMesh.draw();
                 }
@@ -384,9 +384,9 @@ int main() {
 
         // mesh.updateVertices(blocks["container"]);
         for (int y = -3; y >= -9; y--) {
-            for (int x = -HALF_OF_THE_CHUNK_SIZE; x <= HALF_OF_THE_CHUNK_SIZE; x++) {
-                for (int z = -HALF_OF_THE_CHUNK_SIZE; z <= HALF_OF_THE_CHUNK_SIZE; z++) {
-                    model = glm::translate(UNIT_MATRIX, glm::vec3(x, y, z));
+            for (int x = -halfOfTheChunkSize; x <= halfOfTheChunkSize; x++) {
+                for (int z = -halfOfTheChunkSize; z <= halfOfTheChunkSize; z++) {
+                    model = glm::translate(unitMatrix, glm::vec3(x, y, z));
                     blocksWithLightingShader.setUniform("uModel", model);
                     blocksMesh.draw();
                 }
@@ -398,7 +398,7 @@ int main() {
         auto degrees = static_cast<float>(glfwGetTime() * 30);
         float additionalDegrees = 0;
         for (glm::vec3 floatingCube: floatingCubes) {
-            model = glm::translate(UNIT_MATRIX, floatingCube);
+            model = glm::translate(unitMatrix, floatingCube);
             model = glm::rotate(model, glm::radians(degrees + additionalDegrees), glm::vec3(1.0f, 0.3f, 0.5f));
             additionalDegrees += 30;
             blocksWithLightingShader.setUniform("uModel", model);
@@ -433,7 +433,7 @@ int main() {
         //minor // Drawing the backpack model //
 
         blocksWithLightingShader.use();
-        model = glm::translate(UNIT_MATRIX, glm::vec3(0.0f, -20.0f, 0.0f));
+        model = glm::translate(unitMatrix, glm::vec3(0.0f, -20.0f, 0.0f));
         model = glm::scale(model, glm::vec3(1.0f));
         blocksWithLightingShader.setUniform("uModel", model);
         backpackModel.draw(blocksWithLightingShader);
@@ -445,8 +445,8 @@ int main() {
 
         lightSourceShader.setUniform("uColor", glm::vec3(1.0f));
 
-        for (auto lightPosition: POINT_LIGHTS_POSITIONS) {
-            model = glm::translate(UNIT_MATRIX, lightPosition);
+        for (auto lightPosition: pointLightPositions) {
+            model = glm::translate(unitMatrix, lightPosition);
             lightSourceShader.setUniform("uModel", model);
             blocksMesh.draw();
         }
@@ -474,7 +474,7 @@ int main() {
         for (auto &transparentBlock: std::views::reverse(sorted)) {
             const TransparentBlockPosition &block = transparentBlock.second;
             blocksMesh.updateVertices(blocks[block.type]);
-            model = glm::translate(UNIT_MATRIX, block.position);
+            model = glm::translate(unitMatrix, block.position);
             transparentShader.setUniform("uModel", model);
 
             glCullFace(GL_FRONT);

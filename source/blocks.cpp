@@ -9,16 +9,16 @@
 //info // Generating block from texture atlas //
 
 glm::vec4 getTextureFromAtlas(glm::vec2 textureCoordinates) {
-    constexpr unsigned int ATLAS_SIZE = 2; //minor // Change this value, depending on the atlas (ATLAS_SIZE x ATLAS_SIZE) //
+    constexpr unsigned int atlasSize = 2; //minor // Change this value, depending on the atlas (atlasSize x atlasSize) //
 
-    const float FLIPPED_Y = ATLAS_SIZE - 1 - textureCoordinates.y;
-    constexpr float BLEED_MARGIN = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
+    const float flippedY = atlasSize - 1 - textureCoordinates.y;
+    constexpr float bleedMargin = 0.005f; //exp // It's here to not see "bleeding" (lines between blocks) //
 
     return {
-        (textureCoordinates.x + BLEED_MARGIN) / ATLAS_SIZE,
-        (textureCoordinates.x + 1 - BLEED_MARGIN) / ATLAS_SIZE,
-        (FLIPPED_Y + BLEED_MARGIN) / ATLAS_SIZE,
-        (FLIPPED_Y + 1 - BLEED_MARGIN) / ATLAS_SIZE
+        (textureCoordinates.x + bleedMargin) / atlasSize,
+        (textureCoordinates.x + 1 - bleedMargin) / atlasSize,
+        (flippedY + bleedMargin) / atlasSize,
+        (flippedY + 1 - bleedMargin) / atlasSize
     };
 }
 
