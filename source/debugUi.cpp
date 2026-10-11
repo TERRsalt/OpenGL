@@ -39,21 +39,4 @@ namespace debugUi {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
-
-    void debug() {
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        ImGui::Begin("Debug");
-
-        static constexpr GLenum DEPTH_OPTIONS[] = {GL_ALWAYS, GL_NEVER, GL_LESS, GL_EQUAL, GL_LEQUAL, GL_GREATER, GL_NOTEQUAL, GL_GEQUAL};
-        static int selectedOption = 2;
-        static constexpr const char *DEPTH_OPTIONS_NAMES[] = {"GL_ALWAYS", "GL_NEVER", "GL_LESS", "GL_EQUAL", "GL_LEQUAL", "GL_GREATER", "GL_NOTEQUAL", "GL_GEQUAL"};
-
-        if (ImGui::Combo("Depth function", &selectedOption, DEPTH_OPTIONS_NAMES, IM_ARRAYSIZE(DEPTH_OPTIONS_NAMES))) glDepthFunc(DEPTH_OPTIONS[selectedOption]);
-
-        ImGui::End();
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    }
 }

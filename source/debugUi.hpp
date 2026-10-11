@@ -7,5 +7,4 @@ namespace debugUi {
     void remove();
 
     void fpsAndTheCoordinates();
-    void debug();
 }

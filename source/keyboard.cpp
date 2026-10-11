@@ -56,12 +56,6 @@ static void turnGlDepthMaskOnAndOff() {
 
 bool fpsAndTheCoordinatesDebugMenu = false;
 
-bool debugMenu = false;
-static void enableDebugMenu(GLFWwindow *window) {
-    debugMenu = !debugMenu;
-    if (!isPaused == debugMenu) pause(window);
-}
-
 //info // Input //
 
 static std::map<int, bool> wasPressedMap;
@@ -88,6 +82,4 @@ void processingTheInput(GLFWwindow *window) {
     //minor // FsomeNumber buttons //
 
     else if (wasKeyboardButtonPressed(window, GLFW_KEY_F3)) fpsAndTheCoordinatesDebugMenu = !fpsAndTheCoordinatesDebugMenu;
-
-    else if (wasKeyboardButtonPressed(window, GLFW_KEY_F4)) enableDebugMenu(window);
 }

@@ -39,9 +39,11 @@ int main() {
 
     Shader skyboxShader("shaders/skybox.vert", "shaders/skybox.frag");
 
+    Shader reflectionShader("shaders/reflection.vert", "shaders/reflection.frag");
+
     // Shader singleColorShaderShader("shaders/vertex.vert", "shaders/singleColorShader.frag"); //exp // Needed for stencil //
 
-    Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
+    // Shader framebufferShader("shaders/framebuffer.vert", "shaders/framebuffer.frag");
 
     //info // Meshes and models //
 
@@ -335,26 +337,6 @@ int main() {
 
         glm::mat4 model;
 
-        //minor // Drawing the skybox //
-
-        glDepthMask(GL_FALSE);
-        glDisable(GL_CULL_FACE);
-        glActiveTexture(GL_TEXTURE2);
-
-        skyboxShader.use();
-        skyboxShader.setUniform("uSkybox", 2);
-
-        glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
-        skyboxShader.setViewAndProjection(skyboxView);
-
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-
-        skyboxMesh.draw();
-
-        glDepthMask(GL_TRUE);
-        glEnable(GL_CULL_FACE);
-        glActiveTexture(GL_TEXTURE0);
-
         //minor // Drawing the blocks //
 
         constexpr int halfOfTheChunkSize = 4;
@@ -451,6 +433,44 @@ int main() {
             blocksMesh.draw();
         }
 
+        //minor // Drawing the skybox //
+
+        glDepthFunc(GL_LEQUAL);
+
+        glDepthMask(GL_FALSE);
+        glDisable(GL_CULL_FACE);
+        glActiveTexture(GL_TEXTURE2);
+
+        skyboxShader.use();
+        skyboxShader.setUniform("uSkybox", 2);
+
+        glm::mat4 skyboxView = glm::mat4(glm::mat3(view));
+        skyboxShader.setViewAndProjection(skyboxView);
+
+        skyboxMesh.draw();
+
+        glDepthMask(GL_TRUE);
+        glEnable(GL_CULL_FACE);
+        glActiveTexture(GL_TEXTURE0);
+
+        //minor // Drawing the reflection cube //
+
+        reflectionShader.use();
+        reflectionShader.setViewAndProjection(view);
+        reflectionShader.setUniform("uCameraPosition", camera.position);
+        reflectionShader.setUniform("uSkybox", 2);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+
+        model = glm::translate(unitMatrix, glm::vec3(-3.0f, 1.0f, 3.0f));
+        reflectionShader.setUniform("uModel", model);
+
+        blocksMesh.draw();
+
+        glActiveTexture(GL_TEXTURE0);
+        glDepthFunc(GL_LESS);
+
         //minor // Drawing the grass and glass (transparent "blocks") //
 
         transparentShader.use();
@@ -499,8 +519,6 @@ int main() {
         //minor // ImGui //
 
         if (fpsAndTheCoordinatesDebugMenu) debugUi::fpsAndTheCoordinates();
-
-        if (debugMenu) debugUi::debug();
 
         //minor // Check for events, call events and swap the buffers //
 

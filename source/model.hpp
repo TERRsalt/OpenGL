@@ -32,7 +32,9 @@ public:
         processNode(scene->mRootNode, scene);
     }
 
-    void draw(const Shader &shader) const {for (const auto &mesh: meshes) mesh.draw(shader);}
+    void draw(const Shader &shader) const {
+        for (const auto &mesh: meshes) mesh.draw(shader);
+    }
 
 private:
     std::vector<ModelTexture> texturesLoaded;
